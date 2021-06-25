@@ -1,0 +1,1 @@
+enum PriorityType {NONE, LOW, MEDIUM, HIGH}
