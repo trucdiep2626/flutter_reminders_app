@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
+import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import '../../../../../common/constants/route_constants.dart';
 import 'bloc/all_list_bloc.dart';
 import 'bloc/all_list_event.dart';
@@ -20,37 +21,18 @@ import '../../reminders_list.dart';
 
 import '../../../../../common/extensions/date_extensions.dart';
 
-class AllRemindersList extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _AllRemindersList();
-}
-
-class _AllRemindersList extends State<AllRemindersList> {
+class AllRemindersList extends StatelessWidget {
+  var isUpdated;
   String now = DateTime.now().dateDdMMyyyy;
- 
-
+  final SlidableController slidableController =  SlidableController();
   @override
-  void dispose() { 
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     int id;
     return BlocBuilder<AllRemindersBloc, AllRemindersState>(
         builder: (context, state) {
       return Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppbarWidgetForListScreen(
-            context,
-            () {
-              Navigator.pushNamed(context, RouteList.createNewScreen)
-                  .whenComplete(
-                () async => await BlocProvider.of<AllRemindersBloc>(context)
-                    .add(UpdateAllListEvent( )),
-              );
-            },
-          ),
+          appBar: _appbar(context: context, state: state),
           body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: EdgeInsets.only(
@@ -68,6 +50,7 @@ class _AllRemindersList extends State<AllRemindersList> {
                 left: ScreenUtil().setWidth(20),
               ),
               child: ListView.builder(
+                  //   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: state.myLists.length,
                   itemBuilder: (context, index) {
@@ -81,11 +64,13 @@ class _AllRemindersList extends State<AllRemindersList> {
                           child: Text(
                             state.myLists[index].name,
                             style: ThemeText.headline2ListScreen.copyWith(
-                                color:    ColorConstants.colorMap[state.myLists[index].color]),
+                                color: ColorConstants
+                                    .colorMap[state.myLists[index].color]),
                           ),
                         ),
                       ),
-                      state.remindersOfList[state.myLists[index].name].length == 0
+                      state.remindersOfList[state.myLists[index].name].length ==
+                              0
                           ? Padding(
                               padding: EdgeInsets.only(
                                   top: ScreenUtil().setHeight(20),
@@ -104,16 +89,23 @@ class _AllRemindersList extends State<AllRemindersList> {
 
   Widget getReminderOfList(int index, AllRemindersState state) {
     return ListView.builder(
+       physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: state.remindersOfList[state.myLists[index].name].length,
         itemBuilder: (context, index1) {
-          String time = (DateTime.fromMillisecondsSinceEpoch(
-              state.remindersOfList[state.myLists[index].name][index1].dateAndTime)
+          String time = (DateTime.fromMillisecondsSinceEpoch(state
+                  .remindersOfList[state.myLists[index].name][index1]
+                  .dateAndTime)
               .hourHHmm);
-          String date = DateTime.fromMillisecondsSinceEpoch(
-              state.remindersOfList[state.myLists[index].name][index1].dateAndTime)
+          String date = DateTime.fromMillisecondsSinceEpoch(state
+                  .remindersOfList[state.myLists[index].name][index1]
+                  .dateAndTime)
               .dateDdMMyyyy;
           return Slidable(
+              key:   Key(state
+                  .remindersOfList[state.myLists[index].name][index1].title),
+              controller: slidableController,
+        //   movementDuration: Duration(seconds: 1),
               closeOnScroll: true,
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: [
@@ -130,8 +122,11 @@ class _AllRemindersList extends State<AllRemindersList> {
                           onPressedCancel: () {
                             Navigator.pop(context);
                           },
-                          onPressedOk: () =>
-                              _deleteReminder(index, index1, state)),
+                          onPressedOk: () => _deleteReminder(
+                              index: index,
+                              index1: index1,
+                              state: state,
+                              context: context)),
                     )
                   },
                 )
@@ -147,8 +142,10 @@ class _AllRemindersList extends State<AllRemindersList> {
                           height: 15.h,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: RemindersConstants.getPriorityColor(
-                                state.remindersOfList[state.myLists[index].name][index1].priority),
+                            color: RemindersConstants.getPriorityColor(state
+                                .remindersOfList[state.myLists[index].name]
+                                    [index1]
+                                .priority),
                           ),
                         ),
                         Padding(
@@ -160,27 +157,33 @@ class _AllRemindersList extends State<AllRemindersList> {
                                 Container(
                                   width: ScreenUtil().screenWidth - 85,
                                   child: Text(
-                                      state.remindersOfList[state.myLists[index].name][index1].title,
+                                      state
+                                          .remindersOfList[
+                                              state.myLists[index].name][index1]
+                                          .title,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 5,
                                       softWrap: false,
                                       style: ThemeText.title),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: ScreenUtil().setHeight(3)),
-                                  child: Container(
-                                    width: ScreenUtil().screenWidth - 85,
-                                    child: Text(
-                                      getDetails(
-                                          index, index1, date, time, state),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 5,
-                                      softWrap: false,
-                                      style: ThemeText.subtitle,
-                                    ),
-                                  ),
-                                ),
+                                getDetails(index, index1, date, time, state) ==
+                                        null
+                                    ? SizedBox()
+                                    : Padding(
+                                        padding: EdgeInsets.only(
+                                            top: ScreenUtil().setHeight(3)),
+                                        child: Container(
+                                          width: ScreenUtil().screenWidth - 85,
+                                          child: Text(
+                                            getDetails(index, index1, date,
+                                                time, state),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 5,
+                                            softWrap: false,
+                                            style: ThemeText.subtitle,
+                                          ),
+                                        ),
+                                      ),
                                 Container(
                                   margin: EdgeInsets.only(
                                       top: ScreenUtil().setHeight(10)),
@@ -196,20 +199,63 @@ class _AllRemindersList extends State<AllRemindersList> {
 
   String getDetails(int index, int index1, String date, String time,
       AllRemindersState state) {
-    return state.remindersOfList[state.myLists[index].name][index1].dateAndTime != 0
-        ? ((state.remindersOfList[state.myLists[index].name][index1].dateAndTime % 10 == 1)
-            ? '${date == now ? 'Today' : date}, ${time} \n${state.remindersOfList[state.myLists[index].name][index1].notes}'
-            : '${date == now ? 'Today' : date}\n${state.remindersOfList[state.myLists[index].name][index1].notes}')
-        : '${state.remindersOfList[state.myLists[index].name][index1].notes}';
+    if (state.remindersOfList[state.myLists[index].name][index1].notes != '') {
+      if (state
+              .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
+          0) {
+        if (state.remindersOfList[state.myLists[index].name][index1]
+                    .dateAndTime %
+                10 ==
+            1) {
+          return '${date == now ? 'Today' : date}, ${time} \n${state.remindersOfList[state.myLists[index].name][index1].notes}';
+        } else {
+          return '${date == now ? 'Today' : date}\n${state.remindersOfList[state.myLists[index].name][index1].notes}';
+        }
+      } else {
+        return '${state.remindersOfList[state.myLists[index].name][index1].notes}';
+      }
+    } else {
+      if (state
+              .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
+          0) {
+        if (state.remindersOfList[state.myLists[index].name][index1]
+                    .dateAndTime %
+                10 ==
+            1) {
+          return '${date == now ? 'Today' : date}, ${time}';
+        } else {
+          return '${date == now ? 'Today' : date}';
+        }
+      } else
+        return null;
+    }
   }
 
-  void _deleteReminder(int index, int index1, AllRemindersState state) {
-    String delDate;
+  void _deleteReminder(
+      {int index, int index1, AllRemindersState state, BuildContext context}) {
     int id = state.remindersOfList[state.myLists[index].name][index1].id;
-
-
     BlocProvider.of<AllRemindersBloc>(context)
-        .add(UpdateAllListEvent(  ));
+      ..add(DeleteReminderInAllScreenEvent(id: id))
+      ..add(UpdateAllListEvent(isUpdated: true));
+    ScaffoldMessenger.of(context).showSnackBar(FlashMessage(type: 'Success'));
     Navigator.pop(context);
+  }
+
+  Widget _appbar(
+      {@required BuildContext context, @required AllRemindersState state}) {
+    return AppbarWidgetForListScreen(
+        context: context,
+        onTapCreateNew: () async {
+          isUpdated =
+              await Navigator.pushNamed(context, RouteList.createNewScreen);
+
+          if (isUpdated) {
+            BlocProvider.of<AllRemindersBloc>(context)
+                .add(UpdateAllListEvent(isUpdated: true));
+          }
+        },
+        onTapCancel: () {
+          Navigator.pop(context, state.isUpdated);
+        });
   }
 }

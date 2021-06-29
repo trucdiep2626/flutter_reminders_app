@@ -14,9 +14,19 @@ class ReminderDataSource {
     int id =await config.reminderBox.add(reminder);
     return id;
   }
+Future<Reminder> getReminder(int index) async{
+   return await config.reminderBox.getAt(index);
+}
+Future<int> getLengthOfBox() async{
+    return await config.reminderBox.length;
+}
+  Future<List<int>> updateBox(List<Reminder> reminders) async{
+    await config.reminderBox.clear();
+    return config.reminderBox.addAll(reminders);
+  }
 
   Future<List<Reminder>> getAllReminder() async {
-    log('get all reminder');
+    //log('get all reminder');
     return await config.reminderBox.values.toList() as List<Reminder>;
   }
 
@@ -31,10 +41,50 @@ class ReminderDataSource {
         date).toList();
   }
 
-  Future<void> deleteReminder(int index) async {
-    log((await getAllReminder()).length.toString());
-    log(index.toString());
-     await config.reminderBox.deleteAt(index-1);
+  Future<List<String>> getAllDate()async{
+    List<Reminder> allReminders = await getAllReminder();
+    List<String> dateList = [];
+    for(int i=0;i<allReminders.length;i++)
+      {
+        if(allReminders[i].dateAndTime!=0)
+          {
+            if(dateList.isEmpty || dateList.contains(DateTime.fromMillisecondsSinceEpoch(allReminders[i].dateAndTime).dateDdMMyyyy)==false)
+              {
+                dateList.add( DateTime.fromMillisecondsSinceEpoch(allReminders[i].dateAndTime).dateDdMMyyyy);
+              }
+          }
+      }
+    return dateList;
+  }
+
+  Future<void> deleteReminder(int id) async {
+    List<Reminder> allReminders = await getAllReminder();
+    log(id.toString());
+    for(int i=0;i<allReminders.length;i++)
+      {
+        if(allReminders[i].id==id)
+          {
+            await config.reminderBox.deleteAt(i);
+            break;
+          }
+      }
     log('deleteeeeeeeeee reminder');
   }
+
+  Future<void> deleteRemindersOfList(String list) async
+  {
+    List<Reminder> allReminders = await getAllReminder();
+
+    for(int i=0;i<allReminders.length;i++)
+    {
+      if(allReminders[i].list==list)
+      {
+        await config.reminderBox.deleteAt(i);
+        allReminders.removeAt(i);
+        i--;
+      }
+    }
+    log("deleteRemindersOfList");
+  }
 }
+//8

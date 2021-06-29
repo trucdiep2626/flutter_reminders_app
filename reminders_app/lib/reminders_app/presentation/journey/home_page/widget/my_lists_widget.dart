@@ -24,8 +24,9 @@ class MyListsWidget extends StatelessWidget{
  int index;
  Color color;
  int length;
+ bool isUpdated;
  
-  MyListsWidget({@required this.color, @required this.name ,@required this.index,@required this.length,});
+  MyListsWidget({@required this.color, @required this.name ,@required this.index,@required this.length });
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +88,19 @@ class MyListsWidget extends StatelessWidget{
             actionExtentRatio: 0.2,
             child: GestureDetector(
               onTap: () async {
-                await Navigator.push(context,
+               isUpdated =  await Navigator.push(context,
                     MaterialPageRoute(builder: (_) =>  BlocProvider<ListBloc>(
-                      create: (context) => locator<ListBloc>()..add(UpdateListEvent(index: index)),
+                      create: (context) => locator<ListBloc>()..add(UpdateListEvent(index: index,isUpdated: false)),
                       child: ListScreen(index),
-                    ),))
-                    .whenComplete(() => BlocProvider.of<HomeBloc>(context).add(UpdateEvent()));
+                    ),));
+               log(isUpdated.toString());
+                     if(isUpdated)
+                    {
+                      BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                     // isUpdated=false;
+                    }
+
+
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: ScreenUtil().setWidth(10)),
@@ -106,7 +114,7 @@ class MyListsWidget extends StatelessWidget{
                       flex: 4,
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: HomePageConstant.listIconWidget( color),
+                        child: HomePageConstant.listIconWidget(color),
                       ),
                     ),
                     Expanded(
@@ -139,28 +147,12 @@ class MyListsWidget extends StatelessWidget{
   }
 
   deleteList(BuildContext context, int index) {
-    /*for (int j = 0;
-    j <
-        RemindersList
-            .MyLists[index].list.length;
-    j++) {
-      RemindersList.allReminders
-          .forEach((key, value) {
-        for (int i = 0; i < value.length; i++) {
-          if (value[i].id ==
-              RemindersList
-                  .MyLists[index].list[i].id) {
-            value.removeAt(i);
-            i--;
-          }
-        }
-      });
-    }
-    ;
-   RemindersList.MyLists.removeAt(index);
-    index--;*/
-    BlocProvider.of<HomeBloc>(context).add(DeleteGroupEvent(indexGroup: index));
-    BlocProvider.of<HomeBloc>(context).add(UpdateEvent( ));
+
+    BlocProvider.of<HomeBloc>(context)
+      ..add(DeleteGroupEvent(indexGroup: index))
+        ..add(UpdateEvent( ))
+       ;
+   // BlocProvider.of<HomeBloc>(context).add(UpdateEvent( ));
     Navigator.pop(context);
   }
 

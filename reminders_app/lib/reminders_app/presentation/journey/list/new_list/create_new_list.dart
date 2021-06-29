@@ -3,42 +3,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_screenutil/screen_util.dart';
-import 'package:hive/hive.dart';
 import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
+import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import 'bloc/add_list_bloc.dart';
 import 'bloc/add_list_event.dart';
 import 'bloc/add_list_state.dart';
 import 'bloc/create_list_state.dart';
-import 'bloc/list_stream.dart';
 import '../../reminders_list.dart';
 import '../../../../widgets_constants/appbar.dart';
 
 import '../../../../../common/extensions/date_extensions.dart';
-class NewList extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _NewList();
-}
 
-class _NewList extends State<NewList> {
+class NewList extends StatelessWidget {
   TextEditingController name = TextEditingController();
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Widget build(BuildContext context) {
-    return BlocConsumer<AddListBloc, AddListState>
-      (
-      listener: (context,state){
-        if(state.viewState==ViewState.success)
-          Navigator.pop(context);
+    return BlocConsumer<AddListBloc, AddListState>(
+      listener: (context, state) {
+        if (state.viewState == ViewState.success) {
+          ScaffoldMessenger.of(context).showSnackBar(FlashMessage(
+            type: 'Success',
+          ));
+          Navigator.pop(context, true);
+        } else if (state.viewState == ViewState.error) {
+          ScaffoldMessenger.of(context).showSnackBar(FlashMessage(
+            type: 'Fail',
+          ));
+          BlocProvider.of<AddListBloc>(context)
+              .add(UpdateViewStateEvent(viewState: ViewState.busy));
+        } else if (state.viewState == ViewState.showDialog) {
+          showDialog(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      title: Text(
+                        'Cannot create list. A list with this name already exists',
+                        style: TextStyle(fontSize: ScreenUtil().setSp(15)),
+                      ),
+                      actions: [
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: ScreenUtil().setSp(17),
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        )
+                      ]));
+          BlocProvider.of<AddListBloc>(context)
+              .add(UpdateViewStateEvent(viewState: ViewState.busy));
+        }
       },
-    builder: (context,state){
+      builder: (context, state) {
         return Scaffold(
-          appBar: _appbar(state),
+          appBar: _appbar(state: state, context: context),
           body: ListView(shrinkWrap: true, children: [
             Align(
               alignment: Alignment.topCenter,
@@ -46,7 +73,7 @@ class _NewList extends State<NewList> {
                 padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: state.selectColor,
+                  color: state.selectedColor,
                 ),
                 child: Icon(
                   Icons.list,
@@ -72,19 +99,18 @@ class _NewList extends State<NewList> {
                             fontWeight: FontWeight.w600,
                             fontSize: ScreenUtil().setSp(23)),
                         maxLines: 1,
-                        textCapitalization:
-                        TextCapitalization.sentences,
+                        textCapitalization: TextCapitalization.sentences,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                         ),
                         onChanged: (value) {
                           if (value.isNotEmpty) {
-                            BlocProvider.of<AddListBloc>(context)
-                                .add(ActiveAddButtonEvent(activeAddButton: true));
+                            BlocProvider.of<AddListBloc>(context).add(
+                                ActiveAddButtonEvent(activeAddButton: true));
                           } else {
-                            BlocProvider.of<AddListBloc>(context)
-                                .add(ActiveAddButtonEvent(activeAddButton: false));
+                            BlocProvider.of<AddListBloc>(context).add(
+                                ActiveAddButtonEvent(activeAddButton: false));
                           }
                         },
                       ),
@@ -96,15 +122,13 @@ class _NewList extends State<NewList> {
                         child: GestureDetector(
                           onTap: () => {
                             name.clear(),
-                            BlocProvider.of<AddListBloc>(context)
-                                .add(ActiveAddButtonEvent(activeAddButton: false)),
+                            BlocProvider.of<AddListBloc>(context).add(
+                                ActiveAddButtonEvent(activeAddButton: false)),
                           },
                           child: Container(
-                            padding: EdgeInsets.all(
-                                ScreenUtil().setHeight(2)),
+                            padding: EdgeInsets.all(ScreenUtil().setHeight(2)),
                             decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey),
+                                shape: BoxShape.circle, color: Colors.grey),
                             child: Icon(
                               Icons.clear,
                               size: ScreenUtil().setSp(15),
@@ -115,16 +139,14 @@ class _NewList extends State<NewList> {
                     )
                   ])),
             ),
-            selectColor(context, state),
+            selectedColor(context, state),
           ]),
         );
       },
     );
   }
 
-
-
-  Widget selectColor(BuildContext context, AddListState state) {
+  Widget selectedColor(BuildContext context, AddListState state) {
     return Container(
       alignment: Alignment.center,
       height: ScreenUtil().screenWidth,
@@ -139,27 +161,30 @@ class _NewList extends State<NewList> {
             Colors.yellow,
             Colors.brown,
           ],
-          selectedColor: state.selectColor,
-          onColorChange: (selected) {
-            // listStream.setColor(selected),
+          selectedColor: state.selectedColor,
+          onColorChange: (selecteded) {
             BlocProvider.of<AddListBloc>(context)
-                .add(SelectColorEvent(color: selected));
-            // log(state.selectColor.toString())
+                .add(SelectColorEvent(color: selecteded));
           }),
     );
   }
 
-  Widget _appbar(AddListState state) {
+  Widget _appbar({
+    @required AddListState state,
+    @required BuildContext context,
+  }) {
     return AppbarWidget(
       context,
+      onTapCancel:
+          (state.activeAddBtn == false && state.selectedColor == Colors.blue)
+              ? () => {Navigator.pop(context, false)}
+              : null,
       leadingText: 'Cancel',
       title: 'New List',
       onTapAction: GestureDetector(
         onTap: () {
           if (state.activeAddBtn) {
-           // log(ColorConstants.getColorString(state.selectColor));
-            RemindersList.addList(name.text, ColorConstants.getColorString(state.selectColor));
-            onHandleAddBtn(context);
+            onHandleAddBtn(context, state);
           }
         },
         child: Container(
@@ -168,16 +193,15 @@ class _NewList extends State<NewList> {
               alignment: Alignment.center,
               child: Text('Add',
                   style: ThemeText.actionButton.copyWith(
-                    color:
-                    state.activeAddBtn ? Colors.blue : Colors.grey,
+                    color: state.activeAddBtn ? Colors.blue : Colors.grey,
                   )),
             )),
       ),
     );
   }
-  void onHandleAddBtn(BuildContext context )
-  {
-    log('event add to box');
-    BlocProvider.of<AddListBloc>(context).add(CreateNewListEvent(name:name.text));
+
+  void onHandleAddBtn(BuildContext context, AddListState state) {
+    BlocProvider.of<AddListBloc>(context)
+        .add(CreateNewListEvent(name: name.text, color: state.selectedColor));
   }
 }

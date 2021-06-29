@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
+import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import '../../../../../../common/enums/priority_type.dart';
 import '../../../../../../common/extensions/date_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,12 +21,8 @@ import '../../../reminders_list.dart';
 import '../../../../../widgets_constants/appbar.dart';
 import 'bloc/reminder_state.dart';
 
-class CreateNewReminder extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _CreateNewReminder();
-}
+class CreateNewReminder extends StatelessWidget {
 
-class _CreateNewReminder extends State<CreateNewReminder> {
   String title;
   String notes;
   DateTime date;
@@ -34,25 +31,21 @@ class _CreateNewReminder extends State<CreateNewReminder> {
 
   String now = DateTime.now().dateDdMMyyyy;
 
-
-
-  @override
-  void dispose() {
-  //  reminderStream.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return  BlocConsumer <NewReminderBloc,NewReminderState>(
         listener: (context,state){
           if(state.viewState==ViewState.success)
-            Navigator.pop(context);
+          {
+            ScaffoldMessenger.of(context).showSnackBar(FlashMessage( type: 'Success',));
+            Navigator.pop(context,true);
+          }
+          else if(state.viewState==ViewState.error)
+            ScaffoldMessenger.of(context).showSnackBar(FlashMessage( type: 'Fail',));
         },
       builder: (context,state) {
         return  Scaffold(
-          appBar: _appBarWidget(state),
+          appBar: _appBarWidget(state: state, context: context),
           body: ListView(
             shrinkWrap: true,
             children: [
@@ -91,7 +84,7 @@ class _CreateNewReminder extends State<CreateNewReminder> {
                     ? state.list
                     : 'Reminders',
                 onPressed: () => showDialog(
-                    context: context, builder: (dialogContext) => listDialog(state)),
+                    context: context, builder: (dialogContext) => listDialog(state,context)),
               ),
             ],
           ),
@@ -100,11 +93,11 @@ class _CreateNewReminder extends State<CreateNewReminder> {
     );
   }
 
-  Widget _appBarWidget(NewReminderState state) {
+  Widget _appBarWidget({NewReminderState state, BuildContext context}) {
     return AppbarWidget(
       context,
       leadingText: 'Cancel',
-      onTapCancel: state.title == null? ()=>{Navigator.pop(context)}:null ,
+      onTapCancel: (state.title == null && state.details==null && state.notes == null)? ()=>{Navigator.pop(context,false)}:null ,
       title: 'New Reminder',
       onTapAction: (state == null ||
           state.title == null ||
@@ -125,19 +118,7 @@ class _CreateNewReminder extends State<CreateNewReminder> {
       )
           : GestureDetector(
         onTap: () => {
-          RemindersList.addReminder(
-              state.title,
-              state.notes == null ? '' : state.notes,
-              state.list,
-              state.details != null
-                  ? state.details['date'] +
-                  state.details['time']
-                  : 0,
-              state.details != null
-                  ? state.details['priority']
-                  : 0),
-          _onHandleAddBtn(),
-         // Navigator.pop(context)
+          _onHandleAddBtn(context),
         },
         child: Container(
           //color: Colors.blue,
@@ -157,10 +138,8 @@ class _CreateNewReminder extends State<CreateNewReminder> {
     );
   }
 
-  Widget listDialog(NewReminderState state)
+  Widget listDialog(NewReminderState state, BuildContext context)
   {
-  //  log(state.myLists.length.toString()+">>>>>>>>>>>>>");
-
     return   SimpleDialog(
         contentPadding: EdgeInsets.only(
           bottom: ScreenUtil().setHeight(10),
@@ -192,11 +171,11 @@ class _CreateNewReminder extends State<CreateNewReminder> {
                         },
                         bgIcon: ColorConstants.colorMap[state.myLists[index].color],
                         name: state.myLists[index].name,
-                        length: state.myLists[index].list.length);
+                        );
                   }))
         ]);
   }
-  void _onHandleAddBtn()
+  void _onHandleAddBtn(BuildContext context)
   {
     BlocProvider.of<NewReminderBloc>(context).add(CreateNewReminderEvent());
   }

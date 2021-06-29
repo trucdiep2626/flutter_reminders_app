@@ -20,18 +20,10 @@ import 'bloc/today_list_state.dart';
 import 'bloc/today_list_stream.dart';
 import '../../reminders_list.dart';
 
-class TodayList extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _TodayList();
-}
-
-class _TodayList extends State<TodayList> {
-  String now = DateTime.now().dateDdMMyyyy; 
-  @override
-  void dispose() { 
-    super.dispose();
-  }
-
+class TodayList extends StatelessWidget {
+ var isUpdated ;
+  String now = DateTime.now().dateDdMMyyyy;
+ SlidableController slidableController = SlidableController();
   @override
   Widget build(BuildContext context) {
 
@@ -39,13 +31,7 @@ class _TodayList extends State<TodayList> {
       builder: (context, state) {
           return Scaffold(
               backgroundColor: Colors.white,
-              appBar: AppbarWidgetForListScreen(
-                context,
-                () {
-                  Navigator.pushNamed(context, RouteList.createNewScreen)
-                      .whenComplete(() async =>await BlocProvider.of<TodayListBloc>(context).add(UpdateTodayListEvent()));
-                },
-              ),
+              appBar:  _appbar(context: context, state: state),
               body: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -72,9 +58,7 @@ class _TodayList extends State<TodayList> {
         });
   }
 
-  Widget todayListWidget(TodayListState state,
-    BuildContext context,
-  ) { 
+  Widget todayListWidget(TodayListState state, BuildContext context, ) {
     int id;
     return Expanded(
         child: Padding(
@@ -84,7 +68,7 @@ class _TodayList extends State<TodayList> {
               left: ScreenUtil().setWidth(20),
             ),
             child: ListView.builder(
-                scrollDirection: Axis.vertical,
+               // physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount:  state.todayList.length, //  state.todayList.length,
                 itemBuilder: (context, index) {
@@ -95,6 +79,9 @@ class _TodayList extends State<TodayList> {
                       DateTime.fromMillisecondsSinceEpoch(
                            state.todayList[index].dateAndTime));
                   return Slidable(
+                    key: Key(state.todayList[index].id.toString()),
+                      controller: slidableController,
+                      closeOnScroll: true,
                       actionPane: SlidableDrawerActionPane(),
                       secondaryActions: [
                         IconSlideWidget.edit(),
@@ -153,18 +140,14 @@ class _TodayList extends State<TodayList> {
                                                     ScreenUtil().setSp(17)),
                                           ),
                                         ),
-                                        Padding(
+                                        getDetails(state, index, time)==null? SizedBox():Padding(
                                           padding: EdgeInsets.only(
                                               top: ScreenUtil().setHeight(3)),
                                           child: Container(
                                             width:
                                                 ScreenUtil().screenWidth - 85,
                                             child: Text(
-                                              ( state.todayList[index] .dateAndTime %
-                                                          10 ==
-                                                      1)
-                                                  ? '${time} \n${ state.todayList[index].notes}'
-                                                  : '${ state.todayList[index].notes}',
+                                              getDetails(state, index, time),
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 5,
                                               softWrap: false,
@@ -188,12 +171,53 @@ class _TodayList extends State<TodayList> {
                               ])));
                 })));
   }
-
+String getDetails(TodayListState state,int index, String time)
+{
+  if (state.todayList[index].dateAndTime % 10 == 1)
+    {
+      if (state.todayList[index].notes!='')
+        {
+          return '${time} \n${ state.todayList[index].notes}';
+        }
+      else
+        {
+          return '${time}';
+        }
+    }
+  else
+    {
+      if (state.todayList[index].notes!='')
+      {
+        return '${ state.todayList[index].notes}';
+      }
+      else
+      {
+        return null;
+      }
+    }
+}
   void deleteReminder(
       BuildContext context, TodayListState state, String now, int index) {
     int id =  state.todayList[index].id;
-
-    BlocProvider.of<TodayListBloc>(context).add(UpdateTodayListEvent());
+    BlocProvider.of<TodayListBloc>(context)
+      ..add(DeleteReminderInTodayScreenEvent(id:id))  
+      ..add(UpdateTodayListEvent(isUpdated: true));
     Navigator.pop(context);
   }
+
+ Widget _appbar({@required BuildContext context,@required TodayListState state})
+ {
+   return AppbarWidgetForListScreen(context:context,onTapCreateNew: () async {
+     isUpdated = await Navigator.pushNamed(context, RouteList.createNewScreen);
+     if(isUpdated)
+     {
+       BlocProvider.of<TodayListBloc>(context).add(UpdateTodayListEvent(isUpdated: true));
+     }
+
+   },
+       onTapCancel: (){
+         log(state.isUpdated.toString());
+         Navigator.pop(context,state.isUpdated);});
+ }
+
 }

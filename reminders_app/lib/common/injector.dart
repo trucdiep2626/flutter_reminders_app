@@ -13,6 +13,7 @@ import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/
 import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/bloc/add_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/all_reminders/bloc/all_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/scheduled_list/bloc/scheduled_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/today_list/bloc/today_list_bloc.dart';
 
 GetIt locator = GetIt.instance;
@@ -31,6 +32,7 @@ void setup() {
   locator.registerFactory<AllRemindersBloc>(() => AllRemindersBloc( reminderUc: locator<ReminderUseCase>(),
       groupUc: locator<GroupUsecase>()));
   locator.registerFactory<TodayListBloc>(() => TodayListBloc( reminderUc: locator<ReminderUseCase>()));
+  locator.registerFactory<ScheduledRemindersBloc>(() => ScheduledRemindersBloc( reminderUc: locator<ReminderUseCase>()));
 
   locator.registerFactory<GroupUsecase>(
       () => GroupUsecase(groupRepo: locator<GroupRepository>()));

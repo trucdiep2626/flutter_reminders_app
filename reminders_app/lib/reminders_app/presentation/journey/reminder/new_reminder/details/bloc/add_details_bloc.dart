@@ -12,15 +12,7 @@ class AddDetailsBloc extends Bloc<AddDetailsEvent, AddDetailsState> {
 
   @override
   Stream<AddDetailsState> mapEventToState(AddDetailsEvent event) async* {
-    // if (event is SetDateEvent) {
-    //   yield* _mapSetDateEventToState(event);
-    // }
-    // if (event is SetTimeEvent) {
-    //   yield* _mapSetTimeEventToState(event);
-    // }
-    // if (event is SetPriorityEvent) {
-    //   yield* _mapSetPriorityEventToState(event);
-    // }
+
 
     switch (event.runtimeType) {
       case SetDateEvent:
@@ -37,7 +29,11 @@ class AddDetailsBloc extends Bloc<AddDetailsEvent, AddDetailsState> {
 
   Stream<AddDetailsState> _mapSetDateEventToState(SetDateEvent event) async* {
     final int date = event.date;
-    log(event.hasDate.toString());
+   // log(event.hasDate.toString()+"dateeeee");
+    yield state.update(
+      hasDate: null,
+      date: date,
+    );
     yield state.update(
       hasDate: event.hasDate,
       date: date,

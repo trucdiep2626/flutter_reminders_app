@@ -20,7 +20,11 @@ class GroupUsecase{
   Future<Group> getGroup(int index) async{
     return await groupRepo.getGroup(index);
   }
+  Future<Group> getGroupByName(String name) async{
+    return await groupRepo.getGroupByName(name);
+  }
   Future<void> deleteGroup(int index) async{
+
     return await groupRepo.deleteGroup(index);
   }
 

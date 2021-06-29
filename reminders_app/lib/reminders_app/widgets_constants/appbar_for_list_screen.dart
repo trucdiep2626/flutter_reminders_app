@@ -3,13 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../common/constants/route_constants.dart';
 
 class AppbarWidgetForListScreen extends AppBar {
-  AppbarWidgetForListScreen(BuildContext context, Function onTapCreateNew)
+
+  AppbarWidgetForListScreen({@required BuildContext context, @required Function onTapCreateNew,@required Function onTapCancel })
       : super(
           elevation: 0,
           titleSpacing: 0,
           backgroundColor: Colors.white,
           leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: onTapCancel,
             child: Icon(
               Icons.arrow_back_ios_rounded,
               size: ScreenUtil().setSp(22),

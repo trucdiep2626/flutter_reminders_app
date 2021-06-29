@@ -30,6 +30,9 @@ class GroupRepositoryImpl implements GroupRepository{
   Future<Group> getGroup(int index) async{
     return await groupDs.getGroup(index);
   }
+  Future<Group> getGroupByName(String name) async{
+    return await groupDs.getGroupByName(name);
+  }
 
 
 }

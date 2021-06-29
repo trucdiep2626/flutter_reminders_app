@@ -7,14 +7,16 @@ class ListState extends Equatable {
   Group list;
   List<Reminder> reminderList = [];
   ViewState viewState;
+  bool isUpdated=false;
 
-  ListState({this.list, this.reminderList, this.viewState});
+  ListState({this.list, this.reminderList, this.viewState,this.isUpdated});
   ListState update(
-          {List<Reminder> reminderList, Group list, ViewState viewState}) =>
+          {List<Reminder> reminderList, Group list, ViewState viewState,bool isUpdated}) =>
       ListState(
+        isUpdated: isUpdated ?? this.isUpdated,
           list: list ?? this.list,
           reminderList: reminderList,
           viewState: viewState ?? this.viewState);
   @override
-  List<Object> get props => [this.list, this.reminderList, this.viewState];
+  List<Object> get props => [this.list, this.reminderList, this.viewState,this.isUpdated];
 }

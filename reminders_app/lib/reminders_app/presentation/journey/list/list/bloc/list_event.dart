@@ -4,7 +4,8 @@ abstract class ListEvent{}
 
 class UpdateListEvent extends ListEvent{
 final int index;
-  UpdateListEvent({@required this.index});
+final bool isUpdated;
+  UpdateListEvent({@required this.index, this.isUpdated});
 }
 class DeleteReminderInListScreenEvent extends ListEvent{
 final int id;

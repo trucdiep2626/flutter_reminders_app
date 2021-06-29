@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
 import 'package:reminders_app/reminders_app/domain/entities/group.dart';
@@ -15,7 +16,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GroupUsecase groupUc;
   final ReminderUseCase reminderUc;
 
-  HomeBloc({this.groupUc,this.reminderUc});
+  HomeBloc({@required this.groupUc,@required this.reminderUc});
   @override
   HomeState get initialState => HomeState(
       todayListLength: 0,
@@ -34,12 +35,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _mapDeleteGroupEventToState(DeleteGroupEvent event) async* {
     yield state.update(viewState: ViewState.busy);
-    log((await groupUc.getAllGroup() as List).length.toString());
-    List l1 = await groupUc.getAllGroup();
-    log(l1[0].name);
+  //  log((await groupUc.getAllGroup() as List).length.toString());
+    List<Group> l1 = await groupUc.getAllGroup();
+  //  log(l1[0].name);
+log(l1[event.indexGroup].name);
+    await reminderUc.deleteRemindersOfList(l1[event.indexGroup].name);
+    log(l1.length.toString());
     log(event.indexGroup.toString());
     await groupUc.deleteGroup(event.indexGroup);
     List l2 = await groupUc.getAllGroup();
+    log(l2.length.toString());
     if (l2.length < l1.length) {
       log("deleted");
       yield state.update(viewState: ViewState.success);

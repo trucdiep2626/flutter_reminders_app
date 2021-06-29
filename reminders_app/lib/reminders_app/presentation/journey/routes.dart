@@ -29,12 +29,12 @@ class AppRoutes {
   static Map<String, WidgetBuilder> getAll() {
     return {
       RouteList.allListScreen: (_) => BlocProvider<AllRemindersBloc>(
-            create: (context) => locator<AllRemindersBloc>()..add(UpdateAllListEvent()),
+            create: (context) => locator<AllRemindersBloc>()..add(UpdateAllListEvent(isUpdated: false)),
             child: AllRemindersList(),
           ),
 
       RouteList.todayListScreen: (_) => BlocProvider<TodayListBloc>(
-            create: (context) => locator<TodayListBloc>()..add(UpdateTodayListEvent()),
+            create: (context) => locator<TodayListBloc>()..add(UpdateTodayListEvent(isUpdated: false)),
             child: TodayList(),
           ),
 
@@ -48,7 +48,7 @@ class AppRoutes {
       RouteList.scheduledListScreen: (_) =>
           BlocProvider<ScheduledRemindersBloc>(
               create: (context) =>
-                  ScheduledRemindersBloc()..add(UpdateScheduledEvent()),
+                  locator<ScheduledRemindersBloc>()..add(UpdateScheduledEvent(isUpdated: false)),
               child: ScheduledList()),
 
       RouteList.createNewScreen: (_) => BlocProvider<NewReminderBloc>(

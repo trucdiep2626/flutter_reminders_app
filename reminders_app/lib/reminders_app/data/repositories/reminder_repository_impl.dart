@@ -30,10 +30,27 @@ class ReminderRepositoryImpl implements ReminderRepository{
     return await reminderDs.getReminderOfList(list);
   }
 
+  Future<List<String>> getAllDate()async{
+    return await reminderDs.getAllDate();
+  }
+
   @override
   Future<int> setReminder(Reminder reminder) async {
     log('adddd');
     return await reminderDs.setReminder(reminder);
   }
 
+  @override
+  Future<Reminder> getReminder(int id)async {
+    return await reminderDs.getReminder(id);
+  }
+
+  @override
+  Future<void> deleteRemindersOfList(String list)async {
+    return await reminderDs.deleteRemindersOfList(list);
+  }
+
+  Future<int> getLengthOfBox() async{
+    return await reminderDs.getLengthOfBox();
+  }
 }

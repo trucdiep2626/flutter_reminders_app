@@ -11,9 +11,16 @@ class ReminderUseCase{
   ReminderUseCase({this.reminderRepository});
 
   @override
-  Future<void> deleteReminder(int index) async {
+  Future<void> deleteReminder(int id) async {
     log('delete reminder');
-    return await reminderRepository.deleteReminder(index);
+    return await reminderRepository.deleteReminder(id);
+  }
+
+  Future<void> deleteRemindersOfList(String list) async{
+    return await reminderRepository.deleteRemindersOfList(list);
+  }
+  Future<List<String>> getAllDate()async{
+    return await reminderRepository.getAllDate();
   }
 
   @override
@@ -37,4 +44,11 @@ class ReminderUseCase{
     return await reminderRepository.setReminder(reminder);
   }
 
+  Future<Reminder> getReminder(int index)async {
+    return await reminderRepository.getReminder(index);
+  }
+
+  Future<int> getLengthOfBox() async{
+    return await reminderRepository.getLengthOfBox();
+  }
 }

@@ -1,19 +1,30 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:reminders_app/common/injector.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/home_page/bloc/home_state.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/bloc/add_list_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/create_new_list.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/create_new_reminder.dart';
 import '../../../../../common/constants/route_constants.dart';
 import '../bloc/homepage_bloc.dart';
 import '../bloc/homepage_event.dart';
 
-class BottomBar extends StatelessWidget
-{BuildContext context1;
+class BottomBar extends StatelessWidget {
+  BuildContext context1;
+  HomeState homeState;
+  var isUpdated ;
 
-BottomBar(this.context1 );
+  BottomBar({@required this.context1, @required this.homeState});
 
   @override
   Widget build(BuildContext context) {
     //int value;
-    Color listColor=Colors.blue;
+    Color listColor = Colors.blue;
     return Container(
       padding: EdgeInsets.all(ScreenUtil().setWidth(15)),
       child: Row(
@@ -21,10 +32,14 @@ BottomBar(this.context1 );
           Expanded(
               flex: 3,
               child: GestureDetector(
-                  onTap: () async
-                  {await Navigator.pushNamed(context, RouteList.createNewScreen)
-                      .whenComplete(()=>
-                      BlocProvider.of<HomeBloc>(context1).add(UpdateEvent( ))) ;
+                  onTap: () async {
+                    isUpdated = await Navigator.pushNamed(context,RouteList.createNewScreen);
+
+                    log(isUpdated.toString() + "update");
+                    if (isUpdated) {
+                      BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                      //   isUpdated=false;
+                    }
                   },
                   child: Row(children: [
                     Container(
@@ -51,23 +66,26 @@ BottomBar(this.context1 );
                   ]))),
           Expanded(
               child: GestureDetector(
-                onTap: () async
-                {await Navigator.pushNamed(context,RouteList.createNewList )
-                    .whenComplete(()=>
-                    BlocProvider.of<HomeBloc>(context1).add(UpdateEvent( ))) ;
-                },
-                child: Text(
-                  'Add List',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: ScreenUtil().setSp(15),
-                      color: Colors.blue),
-                ),
-              ))
+            onTap: () async {
+              isUpdated =
+                  await Navigator.pushNamed(context, RouteList.createNewList);
+                if (isUpdated) {
+                  BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                  // isUpdated=false;
+                }
+
+            },
+            child: Text(
+              'Add List',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: ScreenUtil().setSp(15),
+                  color: Colors.blue),
+            ),
+          ))
         ],
       ),
     );
   }
-
 }

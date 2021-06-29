@@ -33,7 +33,7 @@ class HomePageConstant{
         padding: EdgeInsets.all(ScreenUtil().setWidth(5)),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color,
+          color: color??Colors.blue,
         ),
         child: HomePageConstant.iconList);
   }

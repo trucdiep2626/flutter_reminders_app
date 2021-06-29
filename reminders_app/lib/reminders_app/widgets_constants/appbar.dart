@@ -19,7 +19,7 @@ class AppbarWidget extends AppBar {
                   title:'Cancel ?',
                       onPressedCancel: () {Navigator.pop(context);},
 
-                      onPressedOk: () {Navigator.pop(context);Navigator.pop(context);},
+                      onPressedOk: () {Navigator.pop(context,false);Navigator.pop(context,false);},
 
                      )),
               child: Container(
@@ -60,20 +60,6 @@ class AppbarWidget extends AppBar {
             ),
             actions: [
               onTapAction
-           /*   GestureDetector(
-                onTap: onTapAction,
-                child: Container(
-                  //color: Colors.blue,
-                  width: ScreenUtil().screenWidth / 6,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      actionText ?? '',
-                      style: ThemeText.button.copyWith(
-                          color: Colors.blue, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-              ),*/
+
             ]);
 }

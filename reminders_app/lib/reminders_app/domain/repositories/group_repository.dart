@@ -7,6 +7,8 @@ abstract class GroupRepository{
 
   Future<Group> getGroup(int index) async{  }
 
+  Future<Group> getGroupByName(String name) async{  }
+
   Future<void> deleteGroup(int index) async{}
 
 }

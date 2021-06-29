@@ -18,7 +18,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   ListBloc({this.reminderUc,this.groupUc});
 
   @override
-  ListState get initialState => ListState( reminderList: [],list: Group());
+  ListState get initialState => ListState( reminderList: [],list: Group(),isUpdated: false);
 
   @override
   Stream<ListState> mapEventToState(ListEvent event) async* {
@@ -38,10 +38,31 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   Stream<ListState> _mapUpdateEventToState(
       UpdateListEvent event) async* {
     Group list = await groupUc.getGroup(event.index) ;
-    log("  list update");
+    log("list update");
     final List<Reminder> reminderList = await reminderUc.getReminderOfList(list.name);
+     
+      for (int i = 0; i < reminderList.length - 1; i++)
+        for (int j = i; j < reminderList.length; j++) {
+          if (reminderList[i]?.priority <= reminderList[j]?.priority) {
+            Reminder a = reminderList[i];
+            reminderList[i] = reminderList[j];
+            reminderList[j] = a;
+          }
+        }
+      //sắp xếp theo ngày trong cùng 1 thứ tự ưu tiên
+      for (int k = 0; k < reminderList.length; k++) {
+        for (int h = k + 1; h < reminderList.length; h++) {
+          if ((reminderList[k]?.priority == reminderList[h]?.priority) &&
+              (reminderList[k]?.dateAndTime >= reminderList[h]?.dateAndTime)) {
+            Reminder a = reminderList[k];
+            reminderList[k] = reminderList[h];
+            reminderList[h] = a;
+          }
+        }
+      }
+ 
     yield state.update(reminderList: null,list: list);
-    yield state.update(reminderList: reminderList,list: list);
+    yield state.update(reminderList: reminderList,list: list,isUpdated: event.isUpdated);
     //log(state.myLists.length.toString());
   }
 

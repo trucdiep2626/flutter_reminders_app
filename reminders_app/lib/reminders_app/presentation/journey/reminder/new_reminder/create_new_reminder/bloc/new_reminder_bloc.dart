@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:reminders_app/common/extensions/date_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
@@ -13,7 +14,7 @@ import 'reminder_state.dart';
 class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
   final ReminderUseCase reminderUc;
   final GroupUsecase groupUc;
-  NewReminderBloc({this.reminderUc, this.groupUc});
+  NewReminderBloc({@required this.reminderUc,@required this.groupUc});
   @override
   NewReminderState get initialState =>
       NewReminderState(list: 'Reminders', myLists: []);
@@ -44,17 +45,15 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
       GetAllGroupEvent event) async* {
     log('get group');
     List<Group> lists = await groupUc.getAllGroup();
-//log(lists.length.toString()+"))))))))");
     yield state.update(myLists: null);
     yield state.update(myLists: lists);
-   // log(state.myLists.length.toString()+"))))))))");
   }
 
   Stream<NewReminderState> _mapCreateNewReminderToState(
       CreateNewReminderEvent event) async* {
     yield state.update(viewState: ViewState.busy);
     final Reminder reminder = Reminder(
-      id: (await reminderUc.getAllReminder()).length + 1,
+      id: (await reminderUc.getReminder((await reminderUc.getLengthOfBox())-1)).id + 1,
       title: state.title,
       notes: state.notes ?? '',
       list: state.list,

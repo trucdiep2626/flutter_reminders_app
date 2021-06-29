@@ -16,7 +16,7 @@ class ColorConstants
   static String getColorString(Color color)
   {
     log(color.toString());
-    if(color ==  Color(Colors.blue.value))
+    if(color ==  Color(Colors.blue.value) || color == Color(0xff2196f3))
       return 'blue';
     if(color == Color(Colors.red.value))
       return 'red';
@@ -28,6 +28,8 @@ class ColorConstants
       return 'yellow';
     if(color ==  Color(Colors.brown.value))
       return 'brown';
+    if(color ==  Color(Colors.green.value))
+      return 'green';
 
   }
 }
