@@ -53,4 +53,13 @@ class ReminderRepositoryImpl implements ReminderRepository{
   Future<int> getLengthOfBox() async{
     return await reminderDs.getLengthOfBox();
   }
+
+  Future<int> updateReminder(Reminder reminder, int id) async
+  {
+    return await reminderDs.updateReminder(reminder, id);
+  }
+
+  Future<bool> updateBox(List<Reminder> reminders) async {
+    return await reminderDs.updateBox(reminders);
+  }
 }

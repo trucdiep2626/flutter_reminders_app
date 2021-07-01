@@ -10,6 +10,9 @@ import 'package:reminders_app/common/injector.dart';
 import 'package:reminders_app/reminders_app/domain/entities/reminder.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/edit_reminder_screen.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_event.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/create_new_reminder.dart';
@@ -29,7 +32,7 @@ import '../../../../../common/extensions/date_extensions.dart';
 class ListScreen extends StatelessWidget {
   int index;
   int id;
-  var isUpdated;
+
   String now = DateTime.now().dateDdMMyyyy;
   final SlidableController slidableController =   SlidableController();
   ListScreen(this.index);
@@ -83,13 +86,37 @@ class ListScreen extends StatelessWidget {
                   String date = DateTime.fromMillisecondsSinceEpoch(
                           state.reminderList[index1].dateAndTime)
                       .dateDdMMyyyy;
+                  var isUpdated;
                   return Slidable(
                     key: Key(state.reminderList[index1].id.toString()),
                       controller: slidableController,
                       closeOnScroll: true,
                       actionPane: SlidableDrawerActionPane(),
                       secondaryActions: [
-                        IconSlideWidget.edit(),
+                        IconSlideWidget.edit(
+                            ()async{
+                              int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(state.reminderList[index1].dateAndTime)))
+                                  .millisecondsSinceEpoch;
+                              int timeInt = state.reminderList[index1].dateAndTime-dateInt;
+                              log((state.reminderList[index1].dateAndTime).toString());
+                              log(dateInt.toString());
+                              log(timeInt.toString());
+                              isUpdated = await Navigator.push(context,  MaterialPageRoute(
+                                  builder: (context) =>  BlocProvider<EditReminderBloc>(
+                                      create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+                                    id:state.reminderList[index1].id ,
+                                    title: state.reminderList[index1].title,
+                                    notes: state.reminderList[index1].notes,
+                                    list: state.reminderList[index1].list,
+                                    date:state.reminderList[index1].dateAndTime>0?dateInt:0,
+                                    time:  timeInt==0?0:timeInt-1,
+                                    priority: state.reminderList[index1].priority,
+                                    createAt: state.reminderList[index1].createAt,
+                                  ))));
+                              if(isUpdated )
+                              BlocProvider.of<ListBloc>(context).add(UpdateListEvent(index: index, isUpdated: true));
+                            }
+                        ),
                         IconSlideWidget.delete(
                           () => {
                             showDialog(
@@ -220,7 +247,9 @@ class ListScreen extends StatelessWidget {
 
 
   Widget _appbar({@required BuildContext context, @required ListState state}) {
+    var isUpdated;
     return AppbarWidgetForListScreen(
+
         context: context,
         onTapCreateNew: () async {
           isUpdated =

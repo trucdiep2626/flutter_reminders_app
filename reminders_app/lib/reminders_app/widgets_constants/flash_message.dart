@@ -6,7 +6,7 @@ class FlashMessage extends SnackBar {
 
   FlashMessage({@required this.type})
       : super(
-        //  duration: Duration(seconds: 1),
+          duration: Duration(milliseconds: 500),
           content: Row(
             children: [
               Visibility(

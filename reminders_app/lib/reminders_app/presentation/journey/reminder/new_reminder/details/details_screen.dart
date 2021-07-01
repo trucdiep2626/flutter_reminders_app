@@ -303,7 +303,6 @@ class DetailsScreen extends StatelessWidget {
       context,
       leadingText: NewReminderConstants.newReminderTxt,
       title: NewReminderConstants.detailTxt,
-      actionText: DetailConstants.saveTxt,
       onTapAction: GestureDetector(
         onTap: () => {
           Navigator.pop(

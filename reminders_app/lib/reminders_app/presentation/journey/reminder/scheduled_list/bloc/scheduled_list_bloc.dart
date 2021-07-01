@@ -41,7 +41,7 @@ class ScheduledRemindersBloc
     List<String> dateList = await reminderUc.getAllDate();
     Map<String, List<Reminder>> scheduledList = {};
     //sắp xếp datelist
-    for (int i = 0; i < dateList.length - 1; i++) {
+    /*for (int i = 0; i < dateList.length - 1; i++) {
       for (int j = i + 1; j < dateList.length; j++) {
         if ((dateList[i]).compareTo(dateList[j]) > 0) {
           String tmp = dateList[i];
@@ -49,13 +49,13 @@ class ScheduledRemindersBloc
           dateList[j] = tmp;
         }
       }
-    }
+    }*/
     for (int i = 0; i < dateList.length; i++) {
       scheduledList.addAll(
           {dateList[i]: (await reminderUc.getReminderOfDay(dateList[i]))});
     }
     //sắp xếp reminders
-    scheduledList.forEach((key, value) {
+  /*  scheduledList.forEach((key, value) {
       //sắp xếp theo thứ tự ưu tiên
       for (int i = 0; i < value?.length - 1; i++)
         for (int j = i; j < value?.length; j++) {
@@ -76,7 +76,7 @@ class ScheduledRemindersBloc
           }
         }
       }
-    });
+    });*/
     state.update(dateList: null, scheduledList: null);
     yield state.update(dateList: dateList, scheduledList: scheduledList,isUpdated: event.isUpdated);
     log("scheduled list update");

@@ -7,9 +7,15 @@ import 'text_field.dart';
 class ReminderFormWidget extends StatelessWidget {
   final Function(String) onChangeTitle;
   final Function(String) onChangeNotes;
+  final TextEditingController titleController;
+  final TextEditingController notesController;
 
   const ReminderFormWidget(
-      {Key key, this.onChangeTitle, this.onChangeNotes})
+      {Key key,
+     @required this.onChangeTitle,
+        @required  this.onChangeNotes,
+      this.notesController,
+      this.titleController})
       : super(key: key);
 
   @override
@@ -25,12 +31,15 @@ class ReminderFormWidget extends StatelessWidget {
           child: Column(
             children: [
               TextFieldWidget(
-                  hintText: NewReminderConstants.titleTxt,
-                  maxLine: 1,
-                  onChanged: onChangeTitle,),
+                hintText: NewReminderConstants.titleTxt,
+                maxLine: 1,
+                controller: titleController,
+                onChanged: onChangeTitle,
+              ),
               TextFieldWidget(
                   hintText: NewReminderConstants.notesTxt,
                   maxLine: 5,
+                  controller: notesController,
                   onChanged: onChangeNotes)
             ],
           )),

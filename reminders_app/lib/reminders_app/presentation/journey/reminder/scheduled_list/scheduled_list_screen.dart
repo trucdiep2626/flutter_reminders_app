@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import 'package:reminders_app/common/injector.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/edit_reminder_screen.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/scheduled_list/bloc/scheduled_list_event.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import '../../../../../common/constants/route_constants.dart';
@@ -110,13 +115,35 @@ SlidableController slidableController = SlidableController();
               .dateDdMMyyyy;
           //  log(index1.toString()+'}}}}}}}}}}}}');
           return Slidable(
-              key: Key(scheduledListState
-                  .scheduledList[scheduledListState.dateList[index]][index1].id.toString()),
+              key: Key(scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id.toString()),
               controller: slidableController,
               closeOnScroll: true,
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: [
-                IconSlideWidget.edit(),
+                IconSlideWidget.edit(
+                        ()async{
+                      int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime)))
+                          .millisecondsSinceEpoch;
+                      int timeInt = scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime-dateInt;
+                      log((scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime).toString());
+                      log(dateInt.toString());
+                      log(timeInt.toString());
+                      isUpdated = await Navigator.push(context,  MaterialPageRoute(
+                          builder: (context) =>  BlocProvider<EditReminderBloc>(
+                              create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+                            id:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id ,
+                            title: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].title,
+                            notes: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes,
+                            list: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].list,
+                            date:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime>0?dateInt:0,
+                            time:  timeInt==0?0:timeInt-1,
+                            priority: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].priority,
+                            createAt: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].createAt,
+                          ))));
+                      if(isUpdated )
+                        BlocProvider.of<ScheduledRemindersBloc>(context).add(UpdateScheduledEvent(isUpdated: true));
+                    }
+                ),
                 IconSlideWidget.delete(() => {
                       showDialog(
                         context: context,

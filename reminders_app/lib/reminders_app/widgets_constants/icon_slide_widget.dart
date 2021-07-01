@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class IconSlideWidget {
-  static Widget edit (){
+  static Widget edit (Function onTap){
     return    IconSlideAction(
         caption: 'Edit',
         iconWidget: Icon(
@@ -12,7 +12,7 @@ class IconSlideWidget {
           color: Colors.white,
         ),
         color: Colors.blue,
-        onTap: () => {},
+        onTap: onTap,
 
     );
   }

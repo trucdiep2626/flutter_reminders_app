@@ -37,7 +37,11 @@ class MyListsWidget extends StatelessWidget{
             secondaryActions: [
               Padding(
                 padding: EdgeInsets.symmetric(vertical: ScreenUtil().setWidth(10)),
-                child: IconSlideWidget.edit(),
+                child: IconSlideWidget.edit(
+                    (){
+
+                    }
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: ScreenUtil().setWidth(10)),

@@ -45,7 +45,7 @@ class AllRemindersBloc extends Bloc<AllRemindersEvent, AllRemindersState> {
         List<Reminder> reminders = await reminderUc.getReminderOfList(lists[i].name);
         remindersOfList.addAll({lists[i].name:reminders});
       }
-    remindersOfList.forEach((key, value) {
+   /* remindersOfList.forEach((key, value) {
       for (int i = 0; i < value?.length - 1; i++)
         for (int j = i; j < value?.length; j++) {
           if (value[i]?.priority <= value[j]?.priority) {
@@ -65,7 +65,7 @@ class AllRemindersBloc extends Bloc<AllRemindersEvent, AllRemindersState> {
           }
         }
       }
-    });
+    });*/
     yield state.update(myLists: null,remindersOfList: null);
      yield state.update(myLists: lists,remindersOfList: remindersOfList,isUpdated: event.isUpdated);
      log("all list update");

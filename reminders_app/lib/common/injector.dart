@@ -12,6 +12,7 @@ import 'package:reminders_app/reminders_app/presentation/journey/home_page/bloc/
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/bloc/add_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/all_reminders/bloc/all_list_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/scheduled_list/bloc/scheduled_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/today_list/bloc/today_list_bloc.dart';
@@ -27,23 +28,30 @@ void setup() {
   locator.registerFactory<NewReminderBloc>(() => NewReminderBloc(
       reminderUc: locator<ReminderUseCase>(),
       groupUc: locator<GroupUsecase>()));
-  locator.registerFactory<ListBloc>(() => ListBloc( reminderUc: locator<ReminderUseCase>(),
+  locator.registerFactory<ListBloc>(() => ListBloc(
+      reminderUc: locator<ReminderUseCase>(),
       groupUc: locator<GroupUsecase>()));
-  locator.registerFactory<AllRemindersBloc>(() => AllRemindersBloc( reminderUc: locator<ReminderUseCase>(),
+  locator.registerFactory<AllRemindersBloc>(() => AllRemindersBloc(
+      reminderUc: locator<ReminderUseCase>(),
       groupUc: locator<GroupUsecase>()));
-  locator.registerFactory<TodayListBloc>(() => TodayListBloc( reminderUc: locator<ReminderUseCase>()));
-  locator.registerFactory<ScheduledRemindersBloc>(() => ScheduledRemindersBloc( reminderUc: locator<ReminderUseCase>()));
-
+  locator.registerFactory<TodayListBloc>(
+      () => TodayListBloc(reminderUc: locator<ReminderUseCase>()));
+  locator.registerFactory<ScheduledRemindersBloc>(
+      () => ScheduledRemindersBloc(reminderUc: locator<ReminderUseCase>()));
+  locator.registerFactory<EditReminderBloc>(() => EditReminderBloc(
+      reminderUc: locator<ReminderUseCase>(),
+      groupUc: locator<GroupUsecase>()));
+//usecase
   locator.registerFactory<GroupUsecase>(
       () => GroupUsecase(groupRepo: locator<GroupRepository>()));
   locator.registerFactory<ReminderUseCase>(
       () => ReminderUseCase(reminderRepository: locator<ReminderRepository>()));
-
+//repository
   locator.registerFactory<GroupRepository>(
       () => GroupRepositoryImpl(groupDs: locator<GroupDataSource>()));
   locator.registerFactory<ReminderRepository>(
       () => ReminderRepositoryImpl(reminderDs: locator<ReminderDataSource>()));
-
+//data source
   locator.registerLazySingleton<GroupDataSource>(
       () => GroupDataSource(config: locator<LocalConfig>()));
   locator.registerLazySingleton<ReminderDataSource>(

@@ -6,6 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:reminders_app/common/injector.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/edit_reminder_screen.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/today_list/bloc/today_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/today_list/bloc/today_list_event.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
@@ -84,7 +88,30 @@ class TodayList extends StatelessWidget {
                       closeOnScroll: true,
                       actionPane: SlidableDrawerActionPane(),
                       secondaryActions: [
-                        IconSlideWidget.edit(),
+                        IconSlideWidget.edit(
+                                ()async{
+                              int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(state.todayList[index].dateAndTime)))
+                                  .millisecondsSinceEpoch;
+                              int timeInt = state.todayList[index].dateAndTime-dateInt;
+                              log((state.todayList[index].dateAndTime).toString());
+                              log(dateInt.toString());
+                              log(timeInt.toString());
+                              isUpdated = await Navigator.push(context,  MaterialPageRoute(
+                                  builder: (context) =>  BlocProvider<EditReminderBloc>(
+                                      create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+                                    id:state.todayList[index].id ,
+                                    title: state.todayList[index].title,
+                                    notes: state.todayList[index].notes,
+                                    list: state.todayList[index].list,
+                                    date:state.todayList[index].dateAndTime>0?dateInt:0,
+                                    time:  timeInt==0?0:timeInt-1,
+                                    priority: state.todayList[index].priority,
+                                    createAt: state.todayList[index].createAt,
+                                  ))));
+                              if(isUpdated )
+                                BlocProvider.of<TodayListBloc>(context).add(UpdateTodayListEvent(isUpdated: true));
+                            }
+                        ),
                         IconSlideWidget.delete(
                           () => {
                             showDialog(

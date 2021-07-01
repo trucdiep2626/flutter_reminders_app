@@ -7,7 +7,6 @@ class AppbarWidget extends AppBar {
   AppbarWidget(BuildContext context,
       {String leadingText,
       String title,
-      String actionText,
         Widget onTapAction,
       Function onTapCancel})
       : super(
@@ -60,6 +59,5 @@ class AppbarWidget extends AppBar {
             ),
             actions: [
               onTapAction
-
             ]);
 }

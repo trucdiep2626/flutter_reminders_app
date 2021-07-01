@@ -6,6 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:reminders_app/common/constants/color_constants.dart';
+import 'package:reminders_app/common/injector.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_event.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/edit_reminder_screen.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import '../../../../../common/constants/route_constants.dart';
@@ -102,14 +106,34 @@ class AllRemindersList extends StatelessWidget {
                   .dateAndTime)
               .dateDdMMyyyy;
           return Slidable(
-              key:   Key(state
-                  .remindersOfList[state.myLists[index].name][index1].title),
+              key:   Key(state.remindersOfList[state.myLists[index].name][index1].id.toString()),
               controller: slidableController,
         //   movementDuration: Duration(seconds: 1),
               closeOnScroll: true,
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: [
-                IconSlideWidget.edit(),
+                IconSlideWidget.edit(
+                        ()async{
+                      int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(state.remindersOfList[state.myLists[index].name][index1].dateAndTime)))
+                          .millisecondsSinceEpoch;
+                      int timeInt = state.remindersOfList[state.myLists[index].name][index1].dateAndTime-dateInt;
+
+                      isUpdated = await Navigator.push(context,  MaterialPageRoute(
+                          builder: (context) =>  BlocProvider<EditReminderBloc>(
+                              create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+                            id:state.remindersOfList[state.myLists[index].name][index1].id ,
+                            title: state.remindersOfList[state.myLists[index].name][index1].title,
+                            notes: state.remindersOfList[state.myLists[index].name][index1].notes,
+                            list: state.remindersOfList[state.myLists[index].name][index1].list,
+                            date:state.remindersOfList[state.myLists[index].name][index1].dateAndTime>0?dateInt:0,
+                            time:  timeInt==0?0:timeInt-1,
+                            priority: state.remindersOfList[state.myLists[index].name][index1].priority,
+                            createAt: state.remindersOfList[state.myLists[index].name][index1].createAt,
+                          ))));
+                      if(isUpdated )
+                        BlocProvider.of<AllRemindersBloc>(context).add(UpdateAllListEvent(isUpdated: true));
+                    }
+                ),
                 IconSlideWidget.delete(
                   () => {
                     showDialog(

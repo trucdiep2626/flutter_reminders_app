@@ -52,8 +52,10 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
   Stream<NewReminderState> _mapCreateNewReminderToState(
       CreateNewReminderEvent event) async* {
     yield state.update(viewState: ViewState.busy);
+    log((await reminderUc.getLengthOfBox()).toString());
+    int lengthOfBox= (await reminderUc.getLengthOfBox());
     final Reminder reminder = Reminder(
-      id: (await reminderUc.getReminder((await reminderUc.getLengthOfBox())-1)).id + 1,
+      id: lengthOfBox!=0?(await reminderUc.getReminder((await reminderUc.getLengthOfBox())-1)).id + 1:1,
       title: state.title,
       notes: state.notes ?? '',
       list: state.list,
@@ -64,7 +66,66 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
       createAt: DateTime.now().millisecondsSinceEpoch,
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
-    int result = await reminderUc.setReminder(reminder);
+    //int result = await reminderUc.setReminder(reminder);
+    log('hihi');
+    var result;
+    if(lengthOfBox==0)
+      {
+        log('hihi');
+        result = await reminderUc.setReminder(reminder);
+      }
+    else
+      {
+        List<Reminder> allReminders = await reminderUc.getAllReminder();
+        result = await reminderUc.setReminder(reminder);
+      if(lengthOfBox<2)
+        {
+          if(allReminders[0].priority== reminder.priority)
+            {
+              if(allReminders[0].dateAndTime <= reminder.dateAndTime)
+              {
+                allReminders.insert(1, reminder);
+              }
+              else
+                {
+                  allReminders.insert(0, reminder);
+                }
+            }
+          else if(allReminders[0].priority > reminder.priority)
+            {
+              allReminders.insert(1, reminder);
+            }
+          else if(allReminders[0].priority < reminder.priority)
+          {
+            allReminders.insert(0, reminder);
+          }
+        }
+      else
+       {
+         for(int i=0;i<allReminders.length-1;i++)
+         {
+           if((allReminders[i].priority>= reminder.priority && reminder.priority>= allReminders[i+1].priority))
+             {
+                 allReminders.insert(i+1, reminder);
+                 break;
+               }
+         }
+         for (int k = 0; k < allReminders.length; k++) {
+           for (int h = k + 1; h < allReminders.length; h++) {
+             if ((allReminders[k]?.priority == allReminders[h]?.priority) &&
+                 (allReminders[k]?.dateAndTime >= allReminders[h]?.dateAndTime)) {
+               Reminder a = allReminders[k];
+               allReminders[k] = allReminders[h];
+               allReminders[h] = a;
+             }
+           }
+         }
+       }
+      log('hihi');
+      result= await reminderUc.updateBox(allReminders);
+      log('hihi');
+      }
+
     if (result != null) {
       log('success');
       yield state.update(viewState: ViewState.success);

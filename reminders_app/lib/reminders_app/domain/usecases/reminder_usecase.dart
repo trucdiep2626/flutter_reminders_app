@@ -51,4 +51,14 @@ class ReminderUseCase{
   Future<int> getLengthOfBox() async{
     return await reminderRepository.getLengthOfBox();
   }
+
+  Future<int> updateReminder(Reminder reminder, int id) async
+  {
+    log('?????????????');
+    return await reminderRepository.updateReminder(reminder, id);
+  }
+
+  Future<bool> updateBox(List<Reminder> reminders) async {
+    return await reminderRepository.updateBox(reminders);
+  }
 }

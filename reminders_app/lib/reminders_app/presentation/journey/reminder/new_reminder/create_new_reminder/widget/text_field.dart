@@ -2,16 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TextFieldWidget extends StatelessWidget{
+  TextEditingController controller;
   String hintText; int maxLine; Function onChanged;
   TextFieldWidget({
     Key key,
     @required this.hintText,
     @required this.maxLine,
-    @required this.onChanged
+    @required this.onChanged,
+    this.controller
 });
   @override
   Widget build(BuildContext context) {
     return TextField(
+
+      controller: controller,
       maxLines: maxLine,
       textCapitalization: TextCapitalization.sentences,
       textAlign: TextAlign.start,

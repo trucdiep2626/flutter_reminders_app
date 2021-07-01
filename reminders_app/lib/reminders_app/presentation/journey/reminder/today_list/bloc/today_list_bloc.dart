@@ -38,7 +38,7 @@ class TodayListBloc extends Bloc<TodayEvent,TodayListState> {
       UpdateTodayListEvent event) async* {
     log(now+"update");
     List<Reminder> todayList= await reminderUc.getReminderOfDay(now);
-    for (int i = 0; i < todayList.length - 1; i++)
+   /* for (int i = 0; i < todayList.length - 1; i++)
       for (int j = i; j < todayList.length; j++) {
         if (todayList[i]?.priority <= todayList[j]?.priority) {
           Reminder a = todayList[i];
@@ -56,7 +56,7 @@ class TodayListBloc extends Bloc<TodayEvent,TodayListState> {
           todayList[h] = a;
         }
       }
-    }
+    }*/
     yield state.update(todayList: null);
     yield state.update(todayList: todayList,isUpdated: event.isUpdated);
   }
