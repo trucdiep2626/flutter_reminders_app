@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 
 abstract class ListEvent{}
 
-class UpdateListEvent extends ListEvent{
+class UpdateListScreenEvent extends ListEvent{
 final int index;
 final bool isUpdated;
-  UpdateListEvent({@required this.index, this.isUpdated});
+UpdateListScreenEvent({@required this.index, this.isUpdated});
 }
 class DeleteReminderInListScreenEvent extends ListEvent{
 final int id;

@@ -15,7 +15,25 @@ class ColorConstants
   };
   static String getColorString(Color color)
   {
-    log(color.toString());
+
+    if(color ==  Color(Colors.blue.value) || color == Color(0xff2196f3))
+      return 'blue';
+    if(color == Colors.red)
+      return 'red';
+    if(color == Colors.pink)
+      return 'pink';
+    if(color ==  Colors.orange)
+      return 'orange';
+    if(color ==  Colors.yellow)
+      return 'yellow';
+    if(color ==  Colors.brown)
+      return 'brown';
+    if(color ==  Colors.green)
+      return 'green';
+  }
+  static String setColorString(Color color)
+  {
+
     if(color ==  Color(Colors.blue.value) || color == Color(0xff2196f3))
       return 'blue';
     if(color == Color(Colors.red.value))
@@ -30,6 +48,5 @@ class ColorConstants
       return 'brown';
     if(color ==  Color(Colors.green.value))
       return 'green';
-
   }
 }

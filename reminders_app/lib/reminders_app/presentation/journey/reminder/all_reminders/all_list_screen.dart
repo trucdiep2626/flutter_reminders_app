@@ -120,15 +120,17 @@ class AllRemindersList extends StatelessWidget {
 
                       isUpdated = await Navigator.push(context,  MaterialPageRoute(
                           builder: (context) =>  BlocProvider<EditReminderBloc>(
-                              create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
-                            id:state.remindersOfList[state.myLists[index].name][index1].id ,
-                            title: state.remindersOfList[state.myLists[index].name][index1].title,
-                            notes: state.remindersOfList[state.myLists[index].name][index1].notes,
-                            list: state.remindersOfList[state.myLists[index].name][index1].list,
-                            date:state.remindersOfList[state.myLists[index].name][index1].dateAndTime>0?dateInt:0,
-                            time:  timeInt==0?0:timeInt-1,
-                            priority: state.remindersOfList[state.myLists[index].name][index1].priority,
-                            createAt: state.remindersOfList[state.myLists[index].name][index1].createAt,
+                              create: (context) => locator<EditReminderBloc>()
+                                ..add(SetInfoEvent(   id:state.remindersOfList[state.myLists[index].name][index1].id ,
+                                  title: state.remindersOfList[state.myLists[index].name][index1].title,
+                                  notes: state.remindersOfList[state.myLists[index].name][index1].notes,
+                                  list: state.remindersOfList[state.myLists[index].name][index1].list,
+                                  date:state.remindersOfList[state.myLists[index].name][index1].dateAndTime>0?dateInt:0,
+                                  time:  timeInt==0?0:timeInt-1,
+                                  priority: state.remindersOfList[state.myLists[index].name][index1].priority,
+                                  createAt: state.remindersOfList[state.myLists[index].name][index1].createAt,))
+                                ..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+
                           ))));
                       if(isUpdated )
                         BlocProvider.of<AllRemindersBloc>(context).add(UpdateAllListEvent(isUpdated: true));

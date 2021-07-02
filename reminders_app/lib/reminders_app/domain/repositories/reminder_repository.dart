@@ -22,4 +22,6 @@ abstract class ReminderRepository{
   Future<int> updateReminder(Reminder reminder, int id) async  { }
 
   Future<bool> updateBox(List<Reminder> reminders) async { }
+
+  Future<void> updateListOfReminders(String oldList, String newList)async  {    }
 }

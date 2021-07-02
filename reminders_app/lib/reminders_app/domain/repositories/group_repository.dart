@@ -10,5 +10,5 @@ abstract class GroupRepository{
   Future<Group> getGroupByName(String name) async{  }
 
   Future<void> deleteGroup(int index) async{}
-
+  Future<bool> updateGroup(String oldName,Group newGroup) async {  }
 }

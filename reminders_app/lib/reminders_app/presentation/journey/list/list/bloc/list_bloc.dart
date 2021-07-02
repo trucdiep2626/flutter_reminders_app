@@ -22,7 +22,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   @override
   Stream<ListState> mapEventToState(ListEvent event) async* {
-    if (event is UpdateListEvent) {
+    if (event is UpdateListScreenEvent) {
       yield* _mapUpdateEventToState(event);
     }
     if (event is DeleteReminderInListScreenEvent)
@@ -35,7 +35,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     log('deleted');
   }
 
-  Stream<ListState> _mapUpdateEventToState(UpdateListEvent event) async* {
+  Stream<ListState> _mapUpdateEventToState(UpdateListScreenEvent event) async* {
     Group list = await groupUc.getGroup(event.index);
     final List<Reminder> reminderList =
         await reminderUc.getReminderOfList(list.name);

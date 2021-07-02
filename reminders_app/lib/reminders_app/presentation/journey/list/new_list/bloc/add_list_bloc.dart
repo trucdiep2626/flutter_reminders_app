@@ -50,8 +50,7 @@ class AddListBloc extends Bloc<AddListEvent, AddListState> {
       {
       final Group group = Group(
         name: event.name,
-        color: ColorConstants.getColorString(event.color) ??
-            ColorConstants.getColorString(Colors.blue),
+        color: ColorConstants.setColorString(event.color)  ,
         createAt: DateTime.now().dateDdMMyyyy,
         lastUpdate: DateTime.now().dateDdMMyyyy,
       );

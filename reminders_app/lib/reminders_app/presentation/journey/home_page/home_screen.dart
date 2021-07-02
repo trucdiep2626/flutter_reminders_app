@@ -143,9 +143,12 @@ class HomeScreen extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: state.myLists.length==null?0:state.myLists.length,
                     itemBuilder: (context, index) {
+                  //  log(state.myLists[index].color);
                       return MyListsWidget(
-                          color: ColorConstants .colorMap[state.myLists[index].color],
-                          name: state.myLists[index].name,
+                    //    createAt:state.myLists[index].createAt ,
+                        //  color: ColorConstants.colorMap[state.myLists[index].color],
+                          //name: state.myLists[index].name,
+                        state: state,
                           index: index,
                           length: state.listLength[state.myLists[index].name], );
                     }),

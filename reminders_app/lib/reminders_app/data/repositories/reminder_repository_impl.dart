@@ -62,4 +62,9 @@ class ReminderRepositoryImpl implements ReminderRepository{
   Future<bool> updateBox(List<Reminder> reminders) async {
     return await reminderDs.updateBox(reminders);
   }
+
+  Future<void> updateListOfReminders(String oldList, String newList)async
+  {
+     return await reminderDs.updateListOfReminders(oldList, newList);
+  }
 }

@@ -103,18 +103,19 @@ class ListScreen extends StatelessWidget {
                               log(timeInt.toString());
                               isUpdated = await Navigator.push(context,  MaterialPageRoute(
                                   builder: (context) =>  BlocProvider<EditReminderBloc>(
-                                      create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
-                                    id:state.reminderList[index1].id ,
-                                    title: state.reminderList[index1].title,
-                                    notes: state.reminderList[index1].notes,
-                                    list: state.reminderList[index1].list,
-                                    date:state.reminderList[index1].dateAndTime>0?dateInt:0,
-                                    time:  timeInt==0?0:timeInt-1,
-                                    priority: state.reminderList[index1].priority,
-                                    createAt: state.reminderList[index1].createAt,
+                                      create: (context) => locator<EditReminderBloc>()
+                                        ..add(GetAllGroupEventInEditScreen())
+                                      ..add(SetInfoEvent( id:state.reminderList[index1].id ,
+                                        title: state.reminderList[index1].title,
+                                        notes: state.reminderList[index1].notes,
+                                        list: state.reminderList[index1].list,
+                                        date:state.reminderList[index1].dateAndTime>0?dateInt:0,
+                                        time:  timeInt==0?0:timeInt-1,
+                                        priority: state.reminderList[index1].priority,
+                                        createAt: state.reminderList[index1].createAt,)), child:EditReminderScreen(
                                   ))));
                               if(isUpdated )
-                              BlocProvider.of<ListBloc>(context).add(UpdateListEvent(index: index, isUpdated: true));
+                              BlocProvider.of<ListBloc>(context).add(UpdateListScreenEvent(index: index, isUpdated: true));
                             }
                         ),
                         IconSlideWidget.delete(
@@ -206,7 +207,7 @@ class ListScreen extends StatelessWidget {
     id = state.reminderList[index1].id;
     BlocProvider.of<ListBloc>(context)
       ..add(DeleteReminderInListScreenEvent(id: id))
-      ..add(UpdateListEvent(index: index, isUpdated: true));
+      ..add(UpdateListScreenEvent(index: index, isUpdated: true));
     ScaffoldMessenger.of(context).showSnackBar(FlashMessage(type: 'Success'));
     Navigator.pop(context);
   }
@@ -257,7 +258,7 @@ class ListScreen extends StatelessWidget {
 
           if (isUpdated) {
             await BlocProvider.of<ListBloc>(context)
-                .add(UpdateListEvent(index: index, isUpdated: true));
+                .add(UpdateListScreenEvent(index: index, isUpdated: true));
           }
         },
         onTapCancel: () {

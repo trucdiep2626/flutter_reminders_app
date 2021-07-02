@@ -18,14 +18,14 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
   EditReminderBloc({@required this.reminderUc, @required this.groupUc});
 
   @override
-  EditReminderState get initialState =>
-      EditReminderState(list: 'Reminders',
-          myLists: [],
-          date: 0,
-          time: 0,
-          priority: 0,
-          hasTime: false,
-          hasDate: false);
+  EditReminderState get initialState => EditReminderState(
+      list: 'Reminders',
+      myLists: [],
+      date: 0,
+      time: 0,
+      priority: 0,
+      hasTime: false,
+      hasDate: false);
 
   @override
   Stream<EditReminderState> mapEventToState(EditReminderEvent event) async* {
@@ -52,6 +52,9 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
     }
     if (event is GetAllGroupEventInEditScreen) {
       yield* _mapGetAllGroupToState(event);
+    }
+    if (event is SetInfoEvent) {
+      yield* _mapSetInfoEventToState(event);
     }
   }
 
@@ -90,7 +93,6 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
     yield state.update(myLists: lists);
   }
 
-
   Stream<EditReminderState> _mapEditTitleEventToState(
       EditTitleEvent event) async* {
     final String title = event.title;
@@ -115,19 +117,21 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
     yield state.update(viewState: ViewState.busy);
     var result;
     final Reminder reminder = Reminder(
-      id: event.id,
+      id: state.id,
       title: state.title,
       notes: state.notes ?? '',
       list: state.list,
-      dateAndTime:state.hasDate==false?0:state.hasTime==false? state.date :state.date+state.time,
+      dateAndTime: state.hasDate == false
+          ? 0
+          : state.hasTime == false
+              ? state.date
+              : state.date + state.time+1,
       priority: state.priority != null ? state.priority : 0,
-      createAt:event.createAt,
-      lastUpdate: DateTime
-          .now()
-          .millisecondsSinceEpoch,
+      createAt: state.createAt,
+      lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
     log('>>>>>>>>>>');
-    result = await reminderUc.updateReminder(reminder, event.id);
+    result = await reminderUc.updateReminder(reminder, state.id);
     log('>>>>>>>>>>');
     List<Reminder> allReminders = await reminderUc.getAllReminder();
     for (int i = 0; i < allReminders?.length - 1; i++)
@@ -138,20 +142,20 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
           allReminders[j] = a;
         }
       }
-      
-      for (int k = 0; k < allReminders.length; k++) {
-        for (int h = k + 1; h < allReminders.length; h++) {
-          if ((allReminders[k]?.priority == allReminders[h]?.priority) &&
-              (allReminders[k]?.dateAndTime >= allReminders[h]?.dateAndTime)) {
-            Reminder a = allReminders[k];
-            allReminders[k] = allReminders[h];
-            allReminders[h] = a;
-          }
+
+    for (int k = 0; k < allReminders.length; k++) {
+      for (int h = k + 1; h < allReminders.length; h++) {
+        if ((allReminders[k]?.priority == allReminders[h]?.priority) &&
+            (allReminders[k]?.dateAndTime >= allReminders[h]?.dateAndTime)) {
+          Reminder a = allReminders[k];
+          allReminders[k] = allReminders[h];
+          allReminders[h] = a;
         }
       }
+    }
 
     log('hihi');
-    result= await reminderUc.updateBox(allReminders);
+    result = await reminderUc.updateBox(allReminders);
     if (result != null) {
       log('success');
       yield state.update(viewState: ViewState.success);
@@ -161,4 +165,28 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
     yield state.update(viewState: ViewState.error);
   }
 
+  Stream<EditReminderState> _mapSetInfoEventToState(SetInfoEvent event) async* {
+    yield state.update(
+      id: event.id,
+        createAt: event.createAt,
+        title: event.title,
+        notes: event.notes,
+        list: event.list,
+        priority: event.priority,
+    hasDate: (event.date!=0)?true:false,
+      date: event.date,
+      hasTime: event.time!=0?true:false,
+      time: event.time
+    );
+    // if (event.date != 0) {
+    //   int date= event.date;
+    //   yield state.update(hasDate: true, date: date);
+    //   if (event.time != 0) {
+    //     int time = event.time;
+    //     yield state.update(hasTime: true, time:  time);
+    //   }
+    // }
+    log(state.hasDate.toString()+"  "+state.date.toString());
+    log(state.hasTime.toString()+"  "+state.time.toString());
+  }
 }

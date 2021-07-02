@@ -10,11 +10,8 @@ import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart
 import 'bloc/add_list_bloc.dart';
 import 'bloc/add_list_event.dart';
 import 'bloc/add_list_state.dart';
-import 'bloc/create_list_state.dart';
-import '../../reminders_list.dart';
 import '../../../../widgets_constants/appbar.dart';
 
-import '../../../../../common/extensions/date_extensions.dart';
 
 class NewList extends StatelessWidget {
   TextEditingController name = TextEditingController();

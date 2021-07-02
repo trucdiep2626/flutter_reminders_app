@@ -61,4 +61,9 @@ class ReminderUseCase{
   Future<bool> updateBox(List<Reminder> reminders) async {
     return await reminderRepository.updateBox(reminders);
   }
+
+  Future<void> updateListOfReminders(String oldList, String newList)async
+  {
+    return await reminderRepository.updateListOfReminders(oldList, newList);
+  }
 }

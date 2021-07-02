@@ -9,6 +9,7 @@ import 'package:reminders_app/reminders_app/domain/repositories/reminder_reposit
 import 'package:reminders_app/reminders_app/domain/usecases/group_usecase.dart';
 import 'package:reminders_app/reminders_app/domain/usecases/reminder_usecase.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/home_page/bloc/homepage_bloc.dart';
+import 'package:reminders_app/reminders_app/presentation/journey/list/edit_list/bloc/edit_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/bloc/add_list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/all_reminders/bloc/all_list_bloc.dart';
@@ -39,6 +40,9 @@ void setup() {
   locator.registerFactory<ScheduledRemindersBloc>(
       () => ScheduledRemindersBloc(reminderUc: locator<ReminderUseCase>()));
   locator.registerFactory<EditReminderBloc>(() => EditReminderBloc(
+      reminderUc: locator<ReminderUseCase>(),
+      groupUc: locator<GroupUsecase>()));
+  locator.registerFactory<EditListBloc>(() => EditListBloc(
       reminderUc: locator<ReminderUseCase>(),
       groupUc: locator<GroupUsecase>()));
 //usecase

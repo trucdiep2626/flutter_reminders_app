@@ -41,4 +41,18 @@ class GroupDataSource{
     await config.groupBox.deleteAt(index);
     log('delete group');
   }
+
+  Future<bool> updateGroup(String oldName,Group newGroup) async
+  {
+    List<Group> groups= await getAllGroup();
+    for(int i=0;i<groups.length;i++)
+      {
+        if(groups[i].name== oldName)
+          {
+            config.groupBox.putAt(i, newGroup);
+            return true;
+          }
+      }
+    return false;
+  }
 }

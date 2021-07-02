@@ -8,7 +8,7 @@ class TextFieldWidget extends StatelessWidget{
     Key key,
     @required this.hintText,
     @required this.maxLine,
-    @required this.onChanged,
+   this.onChanged,
     this.controller
 });
   @override

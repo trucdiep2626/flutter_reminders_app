@@ -34,5 +34,8 @@ class GroupRepositoryImpl implements GroupRepository{
     return await groupDs.getGroupByName(name);
   }
 
-
+  Future<bool> updateGroup(String oldName,Group newGroup) async
+  {
+    return await groupDs.updateGroup(oldName, newGroup);
+  }
 }

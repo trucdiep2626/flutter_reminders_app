@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,48 +25,9 @@ import 'bloc/edit_reminder_bloc.dart';
 import 'bloc/edit_reminder_event.dart';
 import 'bloc/edit_reminder_state.dart';
 class EditReminderScreen extends StatelessWidget{
-  int id;
-  String title;
-  String notes;
-  String list;
-  int date;
-  int time;
-  int priority;
-  int createAt;
   TextEditingController titleController = TextEditingController();
   TextEditingController notesController = TextEditingController();
 
-  EditReminderScreen({this.id,this.title, this.notes,this.list, this.date, this.time,
-    this.priority,this.createAt});
-  void setInfo(String title, String notes,String list,int date, int time, int priority, BuildContext context) {
-    BlocProvider.of<EditReminderBloc>(context)
-        .add(EditTitleEvent(title: title));
-    titleController.text=title;
-    notesController.text=notes;
-    BlocProvider.of<EditReminderBloc>(context)
-        .add(EditNotesEvent(notes: notes ));
-    BlocProvider.of<EditReminderBloc>(context)
-        .add(EditListEvent(list: list ));
-    if (date != 0) {
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditDateEvent(hasDate: true, date: date));
-  if (time != 0) {
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditTimeEvent(hasTime: true, time: time));
-  } else {
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditTimeEvent(hasTime: false, time: 0));
-  }
-  } else {
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditDateEvent(hasDate: false, date: 0));
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditTimeEvent(hasTime: false, time: 0));
-  }
-  BlocProvider.of<EditReminderBloc>(context)
-      .add(EditPriorityEvent(priority: priority));
-
-  }
   @override
   Widget build(BuildContext context) {
     return  BlocConsumer <EditReminderBloc,EditReminderState>(
@@ -78,7 +41,8 @@ class EditReminderScreen extends StatelessWidget{
             ScaffoldMessenger.of(context).showSnackBar(FlashMessage( type: 'Fail',));
         },
         builder: (context,state) {
-          setInfo(title, notes, list, date, time, priority, context);
+          titleController.text=state.title;
+          notesController.text=state.notes;
           return  Scaffold(
             appBar: _appbar( context,state),
             body: ListView(
@@ -91,14 +55,7 @@ class EditReminderScreen extends StatelessWidget{
                   child: ReminderFormWidget(
                     titleController: titleController,
                       notesController: notesController,
-                      onChangeTitle: (value) => {
-                         BlocProvider.of<EditReminderBloc>(context).add(EditTitleEvent(title: value)),
-                        title = value,
-                      },
-                      onChangeNotes: (value) => {
-                        BlocProvider.of<EditReminderBloc>(context).add(EditNotesEvent(notes: value)),
-                        notes = value,
-                      }),
+                     ),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
@@ -123,13 +80,10 @@ class EditReminderScreen extends StatelessWidget{
                               : '',
                           icon: Icons.calendar_today_sharp,
                           bgIcon: Colors.red,
-                          switchValue:
-                          state.hasTime == true ? true : state.hasDate,
+                          switchValue: state.hasDate,
                           switchOnChanged: (bool value) {
-
                             selectDate(context: context, hasDate: value);
                             selectTime(context: context, hasTime: false);
-
                           },
                           onTapItem: () {
                             if (state.hasDate) {
@@ -156,7 +110,6 @@ class EditReminderScreen extends StatelessWidget{
                                 context: context,
                                 hasDate: true,
                                 now: DateTime.now());
-
                             }
                           },
                           onTapItem: () {
@@ -216,7 +169,6 @@ class EditReminderScreen extends StatelessWidget{
                         context: context, builder: (dialogContext) => listDialog(state,context)),
                   ),
           ),
-
               ],
             ),
           );
@@ -246,7 +198,6 @@ class EditReminderScreen extends StatelessWidget{
             BlocProvider.of<EditReminderBloc>(context)
                 .add(EditPriorityEvent(priority: 0)),
             Navigator.pop(context),
-            priority = 0,
           },
           isNotLast: true,
         ),
@@ -257,8 +208,6 @@ class EditReminderScreen extends StatelessWidget{
               BlocProvider.of<EditReminderBloc>(context)
                   .add(EditPriorityEvent(priority: 1)),
               Navigator.pop(context),
-              priority = 1,
-            //  selectedPriority = priorityTypeUtil(PriorityType.LOW),
             },
             isNotLast: true),
         PriorityItemWidget(
@@ -268,8 +217,6 @@ class EditReminderScreen extends StatelessWidget{
               BlocProvider.of<EditReminderBloc>(context)
                   .add(EditPriorityEvent(priority: 2)),
               Navigator.pop(context),
-              priority = 2,
-          //    selectedPriority = priorityTypeUtil(PriorityType.MEDIUM),
             },
             isNotLast: true),
         PriorityItemWidget(
@@ -279,8 +226,6 @@ class EditReminderScreen extends StatelessWidget{
               BlocProvider.of<EditReminderBloc>(context)
                   .add(EditPriorityEvent(priority: 3)),
               Navigator.pop(context),
-              priority = 3,
-             // selectedPriority = priorityTypeUtil(PriorityType.HIGH),
             },
             isNotLast: false),
       ],
@@ -288,32 +233,31 @@ class EditReminderScreen extends StatelessWidget{
   }
 
   void selectTime({BuildContext context, bool hasTime}) async {
-    time = 0;
+  int  time = 0;
     if (hasTime) {
       final TimeOfDay newTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
       if (newTime != null) {
-        time = (newTime.hour * 60 * 60 + newTime.minute * 60) * 1000 + 1;
+        time = (newTime.hour * 60 * 60 + newTime.minute * 60) * 1000 ;
         BlocProvider.of<EditReminderBloc>(context)
             .add(EditTimeEvent(hasTime: hasTime, time: time));
       }
     } else {
-
       BlocProvider.of<EditReminderBloc>(context)
           .add(EditTimeEvent(hasTime: false, time: 0));
     }
   }
 
   void selectDate({BuildContext context, bool hasDate, DateTime now}) async {
+    int date =0;
     if (now == null) {
       if (hasDate) {
         final DateTime picked = await showDatePicker(
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2015, 8),
-
             lastDate: DateTime(2101));
         if (picked != null) {
           date = DateTime.parse(DateFormat('yyyy-MM-dd').format(picked))
@@ -322,7 +266,6 @@ class EditReminderScreen extends StatelessWidget{
               .add(EditDateEvent(hasDate: hasDate, date: date));
         }
       } else {
-
         date = 0;
         BlocProvider.of<EditReminderBloc>(context)
             .add(EditDateEvent(hasDate: hasDate, date: 0));
@@ -343,7 +286,6 @@ class EditReminderScreen extends StatelessWidget{
           state.title == null ||
           state.title == '')
           ? Container(
-        //color: Colors.blue,
         width: ScreenUtil().screenWidth / 6,
         child: Align(
           alignment: Alignment.center,
@@ -405,7 +347,6 @@ class EditReminderScreen extends StatelessWidget{
                   itemBuilder: (listcontext, index) {
                     return ListItemWidget(
                       onTap: () => {
-                        list= state.myLists[index].name,
                         BlocProvider.of<EditReminderBloc>(context).add(EditListEvent(list:  state.myLists[index].name)),
                         Navigator.pop(context)
                       },
@@ -417,7 +358,10 @@ class EditReminderScreen extends StatelessWidget{
   }
   void _onHandleDoneBtn(BuildContext context)
   {
-     BlocProvider.of<EditReminderBloc>(context).add(UpdateReminderEvent(id: this.id, createAt: this.createAt));
+     BlocProvider.of<EditReminderBloc>(context)
+       ..add(EditTitleEvent(title: titleController.text))
+       ..add(EditNotesEvent(notes: notesController.text))
+       ..add(UpdateReminderEvent( ));
   }
 
   String getContent(content) {

@@ -3,6 +3,8 @@ import 'package:reminders_app/common/enums/view_state.dart';
 import 'package:reminders_app/reminders_app/domain/entities/group.dart';
 
 class EditReminderState extends Equatable {
+  final int id;
+  final int createAt;
   final String title;
   final String notes;
   final String list  ;
@@ -15,7 +17,7 @@ class EditReminderState extends Equatable {
   final List<Group> myLists;
 
   EditReminderState({this.title, this.notes, this.list, this.date, this.time,
-    this.priority, this.hasDate, this.hasTime, this.viewState, this.myLists});
+    this.priority, this.hasDate, this.hasTime, this.viewState, this.myLists,this.id,this.createAt});
   EditReminderState update({  String title,
     String notes,
     String list  ,
@@ -25,8 +27,12 @@ class EditReminderState extends Equatable {
     bool hasDate,
     bool hasTime,
     ViewState viewState,
-    List<Group> myLists,}) =>
+    List<Group> myLists,
+    int id,
+     int createAt}) =>
       EditReminderState(
+        id: id??this.id,
+          createAt: createAt?? this.createAt,
           myLists: myLists?? this.myLists,
           title: title?? this.title,
           notes: notes?? this.notes,
@@ -50,7 +56,9 @@ class EditReminderState extends Equatable {
     this.time,
     this.hasTime,
     this.priority,
-    this.myLists
+    this.myLists,
+    this.id,
+    this.createAt
   ];
 
 }

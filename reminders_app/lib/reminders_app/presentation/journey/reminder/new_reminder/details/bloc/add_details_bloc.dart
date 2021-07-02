@@ -24,9 +24,22 @@ class AddDetailsBloc extends Bloc<AddDetailsEvent, AddDetailsState> {
       case SetPriorityEvent:
         yield* _mapSetPriorityEventToState(event);
         break;
+      case SetDefaultEvent:
+        yield* _mapSetDefaultEventToState(event);
+        break;
     }
   }
 
+  Stream <AddDetailsState> _mapSetDefaultEventToState(SetDefaultEvent event) async*
+  {
+    yield state.update(
+      date: event.date,
+      hasDate: event.date!=0?true:false,
+      hasTime: event.time!=0?true:false,
+      time: event.time,
+      priority: event.priority
+    );
+}
   Stream<AddDetailsState> _mapSetDateEventToState(SetDateEvent event) async* {
     final int date = event.date;
    // log(event.hasDate.toString()+"dateeeee");

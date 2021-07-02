@@ -31,26 +31,7 @@ class DetailsScreen extends StatelessWidget {
 
   DetailsScreen({this.date, this.time, this.priority});
 
-  void setDefault(int date, int time, int priority, BuildContext context) {
-    if (date != 0) {
-      BlocProvider.of<AddDetailsBloc>(context)
-          .add(SetDateEvent(hasDate: true, date: date));
-      if (time != 0) {
-        BlocProvider.of<AddDetailsBloc>(context)
-            .add(SetTimeEvent(hasTime: true, time: time));
-      } else {
-        BlocProvider.of<AddDetailsBloc>(context)
-            .add(SetTimeEvent(hasTime: false, time: 0));
-      }
-    } else {
-      BlocProvider.of<AddDetailsBloc>(context)
-          .add(SetDateEvent(hasDate: false, date: 0));
-      BlocProvider.of<AddDetailsBloc>(context)
-          .add(SetTimeEvent(hasTime: false, time: 0));
-    }
-    BlocProvider.of<AddDetailsBloc>(context)
-        .add(SetPriorityEvent(priority: priority));
-  }
+
 
 
   String selectedPriority = 'None';
@@ -60,7 +41,6 @@ class DetailsScreen extends StatelessWidget {
     String now = DateTime.now().dateDdMMyyyy;
     return BlocBuilder<AddDetailsBloc, AddDetailsState>(
       builder: (context, state) {
-        setDefault(date, time, priority, context);
         return Scaffold(
             appBar: _appBar(context, state),
             body: Column(children: [

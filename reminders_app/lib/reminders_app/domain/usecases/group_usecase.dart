@@ -28,4 +28,8 @@ class GroupUsecase{
     return await groupRepo.deleteGroup(index);
   }
 
+  Future<bool> updateGroup(String oldName,Group newGroup) async
+  {
+    return await groupRepo.updateGroup(oldName, newGroup);
+  }
 }

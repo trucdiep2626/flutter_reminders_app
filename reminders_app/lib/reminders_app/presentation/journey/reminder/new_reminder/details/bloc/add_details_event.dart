@@ -19,3 +19,10 @@ class SetPriorityEvent extends AddDetailsEvent {
   final int priority;
   SetPriorityEvent({@required this.priority});
 }
+
+class SetDefaultEvent extends AddDetailsEvent{
+  final int date;
+  final int time;
+  final int priority;
+  SetDefaultEvent({this.date, this.time, this.priority});
+}

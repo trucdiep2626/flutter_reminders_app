@@ -130,15 +130,17 @@ SlidableController slidableController = SlidableController();
                       log(timeInt.toString());
                       isUpdated = await Navigator.push(context,  MaterialPageRoute(
                           builder: (context) =>  BlocProvider<EditReminderBloc>(
-                              create: (context) => locator<EditReminderBloc>()..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
-                            id:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id ,
-                            title: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].title,
-                            notes: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes,
-                            list: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].list,
-                            date:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime>0?dateInt:0,
-                            time:  timeInt==0?0:timeInt-1,
-                            priority: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].priority,
-                            createAt: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].createAt,
+                              create: (context) => locator<EditReminderBloc>()
+                                ..add(SetInfoEvent(        id:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id ,
+                                  title: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].title,
+                                  notes: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes,
+                                  list: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].list,
+                                  date:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime>0?dateInt:0,
+                                  time:  timeInt==0?0:timeInt-1,
+                                  priority: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].priority,
+                                  createAt: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].createAt,))
+                                ..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
+
                           ))));
                       if(isUpdated )
                         BlocProvider.of<ScheduledRemindersBloc>(context).add(UpdateScheduledEvent(isUpdated: true));

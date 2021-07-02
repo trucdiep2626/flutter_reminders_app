@@ -25,8 +25,24 @@ class ReminderDataSource {
         break;
       }
     }
-
     return 1;
+  }
+  Future<void> updateListOfReminders(String oldList, String newList)async
+  {
+    List<Reminder> allReminders = await getAllReminder();
+    for(int i=0;i<allReminders.length;i++)
+      {
+        if(allReminders[i].list==oldList)
+          {
+            await config.reminderBox.putAt(i, Reminder(id: allReminders[i].id,title: allReminders[i].title,
+            notes: allReminders[i].notes,
+            dateAndTime: allReminders[i].dateAndTime,
+            priority: allReminders[i].priority,
+            createAt: allReminders[i].createAt,
+            lastUpdate: DateTime.now().millisecondsSinceEpoch,
+            list: newList));
+          }
+      }
   }
 
   Future<Reminder> getReminder(int index) async {

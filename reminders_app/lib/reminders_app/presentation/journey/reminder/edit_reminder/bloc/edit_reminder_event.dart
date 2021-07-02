@@ -22,16 +22,26 @@ class EditListEvent extends EditReminderEvent{
   EditListEvent({@required this.list});
 }
 
+class SetInfoEvent extends EditReminderEvent{
+  final int id;
+  final String title;
+  final String notes;
+  final String list;
+  final int date;
+  final int time;
+  final int priority;
+  final int createAt;
 
+  SetInfoEvent({@required this.id,@required this.title, this.notes,@required this.list, this.date, this.time,
+   @required this.priority,@required this.createAt});
+}
 
 class GetAllGroupEventInEditScreen extends EditReminderEvent{
   GetAllGroupEventInEditScreen();
 }
 
 class  UpdateReminderEvent extends EditReminderEvent{
-  final int id;
-  final int createAt;
-  UpdateReminderEvent({ this.id,this.createAt});
+  UpdateReminderEvent( );
 }
 class EditDateEvent extends EditReminderEvent {
   final bool hasDate;
