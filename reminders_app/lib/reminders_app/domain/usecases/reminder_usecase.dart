@@ -19,7 +19,7 @@ class ReminderUseCase{
   Future<void> deleteRemindersOfList(String list) async{
     return await reminderRepository.deleteRemindersOfList(list);
   }
-  Future<List<String>> getAllDate()async{
+  Future<List<int>> getAllDate()async{
     return await reminderRepository.getAllDate();
   }
 

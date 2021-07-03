@@ -61,7 +61,6 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
   Stream<EditReminderState> _mapEditDateEventToState(
       EditDateEvent event) async* {
     final int date = event.date;
-    // log(event.hasDate.toString()+"dateeeee");
     yield state.update(
       hasDate: event.hasDate,
       date: date,
@@ -130,9 +129,8 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
       createAt: state.createAt,
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
-    log('>>>>>>>>>>');
+    log(state.id.toString()+">>>>>>>>>>>");
     result = await reminderUc.updateReminder(reminder, state.id);
-    log('>>>>>>>>>>');
     List<Reminder> allReminders = await reminderUc.getAllReminder();
     for (int i = 0; i < allReminders?.length - 1; i++)
       for (int j = i; j < allReminders?.length; j++) {
@@ -166,6 +164,7 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
   }
 
   Stream<EditReminderState> _mapSetInfoEventToState(SetInfoEvent event) async* {
+    log(event.id.toString()+"____________________________");
     yield state.update(
       id: event.id,
         createAt: event.createAt,
@@ -175,18 +174,8 @@ class EditReminderBloc extends Bloc<EditReminderEvent, EditReminderState> {
         priority: event.priority,
     hasDate: (event.date!=0)?true:false,
       date: event.date,
-      hasTime: event.time!=0?true:false,
+      hasTime:(event.date!=0)?(event.time!=0?true:false):false ,
       time: event.time
     );
-    // if (event.date != 0) {
-    //   int date= event.date;
-    //   yield state.update(hasDate: true, date: date);
-    //   if (event.time != 0) {
-    //     int time = event.time;
-    //     yield state.update(hasTime: true, time:  time);
-    //   }
-    // }
-    log(state.hasDate.toString()+"  "+state.date.toString());
-    log(state.hasTime.toString()+"  "+state.time.toString());
   }
 }

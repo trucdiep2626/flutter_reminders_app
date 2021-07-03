@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
+
 abstract class TodayEvent{
 
 }
 class UpdateTodayListEvent extends TodayEvent{
   final bool isUpdated;
 
-  UpdateTodayListEvent({this.isUpdated});
+  UpdateTodayListEvent({@required this.isUpdated});
 }
 class DeleteReminderInTodayScreenEvent extends TodayEvent{
   final int id;
-  DeleteReminderInTodayScreenEvent({this.id});
+  DeleteReminderInTodayScreenEvent({@required this.id});
 }

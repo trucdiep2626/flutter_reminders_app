@@ -7,7 +7,7 @@ abstract class AddDetailsEvent {
 class SetDateEvent extends AddDetailsEvent {
   final bool hasDate;
   final int date;
-  SetDateEvent({  this.date, @required this.hasDate});
+  SetDateEvent({ this.date, @required this.hasDate});
 }
 
 class SetTimeEvent extends AddDetailsEvent {

@@ -30,7 +30,7 @@ class ReminderRepositoryImpl implements ReminderRepository{
     return await reminderDs.getReminderOfList(list);
   }
 
-  Future<List<String>> getAllDate()async{
+  Future<List<int>> getAllDate()async{
     return await reminderDs.getAllDate();
   }
 

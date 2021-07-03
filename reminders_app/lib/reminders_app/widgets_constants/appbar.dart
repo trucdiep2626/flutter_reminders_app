@@ -7,25 +7,34 @@ class AppbarWidget extends AppBar {
   AppbarWidget(BuildContext context,
       {String leadingText,
       String title,
-        Widget onTapAction,
+      Widget onTapAction,
       Function onTapCancel})
       : super(
             elevation: 0,
-            leadingWidth: title=='Details'?ScreenUtil().screenWidth / 4:ScreenUtil().screenWidth / 5,
+            leadingWidth: title == 'Details'
+                ? ScreenUtil().screenWidth / 4
+                : ScreenUtil().screenWidth / 5,
             leading: GestureDetector(
-              onTap: onTapCancel!=null?onTapCancel:()=> showDialog(context: context, builder: (_)=>ConfirmDialog(
-                confirmText: 'Cancel',
-                  title:'Cancel ?',
-                      onPressedCancel: () {Navigator.pop(context);},
-
-                      onPressedOk: () {Navigator.pop(context,false);Navigator.pop(context,false);},
-
-                     )),
+              onTap: onTapCancel != null
+                  ? onTapCancel
+                  : () => showDialog(
+                      context: context,
+                      builder: (_) => ConfirmDialog(
+                            confirmText: 'Discard Changes',
+                            title: 'Cancel ?',
+                            onPressedCancel: () {
+                              Navigator.pop(context);
+                            },
+                            onPressedOk: () {
+                              Navigator.pop(context, false);
+                              Navigator.pop(context, false);
+                            },
+                          )),
               child: Container(
                 child: Row(
                   children: [
                     Visibility(
-                      visible: title=='Details'?true:false,
+                      visible: title == 'Details' ? true : false,
                       child: Expanded(
                         flex: 1,
                         child: Icon(Icons.arrow_back_ios_rounded,
@@ -57,7 +66,5 @@ class AppbarWidget extends AppBar {
                   fontSize: ScreenUtil().setSp(16),
                   fontWeight: FontWeight.w700),
             ),
-            actions: [
-              onTapAction
-            ]);
+            actions: [onTapAction]);
 }

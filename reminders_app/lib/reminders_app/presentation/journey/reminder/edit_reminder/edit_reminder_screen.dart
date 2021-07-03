@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +12,6 @@ import 'package:reminders_app/reminders_app/presentation/journey/home_page/homep
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/widget/container_button_widget.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/widget/list_dialog_item.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/widget/reminder_form_widget.dart';
- 
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/details/details_constants.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/details/widget/details_item.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/details/widget/priority_item.dart';
@@ -271,9 +269,9 @@ class EditReminderScreen extends StatelessWidget{
             .add(EditDateEvent(hasDate: hasDate, date: 0));
       }
     } else {
-      date= now.millisecondsSinceEpoch- (TimeOfDay.now().hour* 60 * 60 + TimeOfDay.now().minute * 60) * 1000;
+      date = now.millisecondsSinceEpoch -(TimeOfDay.now().hour * 60 * 60 + TimeOfDay.now().minute * 60) * 1000-now.second*1000-now.millisecond;
       BlocProvider.of<EditReminderBloc>(context).add(
-          EditDateEvent(hasDate: true, date: now.millisecondsSinceEpoch));
+          EditDateEvent(hasDate: true, date: date));
     }
   }
 

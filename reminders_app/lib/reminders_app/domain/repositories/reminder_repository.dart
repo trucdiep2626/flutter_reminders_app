@@ -13,7 +13,7 @@ abstract class ReminderRepository{
 
   Future<void> deleteRemindersOfList(String list) async{}
 
-  Future<List<String>> getAllDate()async{}
+  Future<List<int>> getAllDate()async{}
 
   Future<Reminder> getReminder(int index) async{  }
 

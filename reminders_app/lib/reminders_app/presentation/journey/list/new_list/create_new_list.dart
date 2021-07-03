@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:flutter_screenutil/screen_util.dart';
-import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';

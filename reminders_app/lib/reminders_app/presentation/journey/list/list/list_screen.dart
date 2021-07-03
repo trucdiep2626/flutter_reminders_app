@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/screen_util.dart';
@@ -7,26 +6,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/common/injector.dart';
-import 'package:reminders_app/reminders_app/domain/entities/reminder.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_event.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_bloc.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/bloc/edit_reminder_event.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/edit_reminder/edit_reminder_screen.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_event.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/create_new_reminder.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import '../../../../../common/constants/route_constants.dart';
 import 'bloc/list_state.dart';
-import 'bloc/list_stream.dart';
 import '../../reminder/reminders_constants.dart';
 import '../../../../widgets_constants/appbar_for_list_screen.dart';
 import '../../../../widgets_constants/confirm_dialog.dart';
 import '../../../../widgets_constants/icon_slide_widget.dart';
-import '../../reminders_list.dart';
-
 import '../../../../../common/extensions/date_extensions.dart';
 
 class ListScreen extends StatelessWidget {
@@ -34,7 +26,7 @@ class ListScreen extends StatelessWidget {
   int id;
 
   String now = DateTime.now().dateDdMMyyyy;
-  final SlidableController slidableController =   SlidableController();
+  final SlidableController slidableController = SlidableController();
   ListScreen(this.index);
   @override
   Widget build(BuildContext context) {
@@ -76,7 +68,6 @@ class ListScreen extends StatelessWidget {
               left: ScreenUtil().setWidth(20),
             ),
             child: ListView.builder(
-             //   physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.reminderList.length,
                 itemBuilder: (context, index1) {
@@ -88,36 +79,50 @@ class ListScreen extends StatelessWidget {
                       .dateDdMMyyyy;
                   var isUpdated;
                   return Slidable(
-                    key: Key(state.reminderList[index1].id.toString()),
+                      key: Key(state.reminderList[index1].id.toString()),
                       controller: slidableController,
                       closeOnScroll: true,
                       actionPane: SlidableDrawerActionPane(),
                       secondaryActions: [
-                        IconSlideWidget.edit(
-                            ()async{
-                              int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(state.reminderList[index1].dateAndTime)))
-                                  .millisecondsSinceEpoch;
-                              int timeInt = state.reminderList[index1].dateAndTime-dateInt;
-                              log((state.reminderList[index1].dateAndTime).toString());
-                              log(dateInt.toString());
-                              log(timeInt.toString());
-                              isUpdated = await Navigator.push(context,  MaterialPageRoute(
-                                  builder: (context) =>  BlocProvider<EditReminderBloc>(
-                                      create: (context) => locator<EditReminderBloc>()
+                        IconSlideWidget.edit(() async {
+                          int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.fromMillisecondsSinceEpoch(
+                                      state.reminderList[index1].dateAndTime)))
+                              .millisecondsSinceEpoch;
+                          int timeInt =
+                              state.reminderList[index1].dateAndTime - dateInt;
+                          isUpdated = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider<
+                                          EditReminderBloc>(
+                                      create: (context) => locator<
+                                          EditReminderBloc>()
                                         ..add(GetAllGroupEventInEditScreen())
-                                      ..add(SetInfoEvent( id:state.reminderList[index1].id ,
-                                        title: state.reminderList[index1].title,
-                                        notes: state.reminderList[index1].notes,
-                                        list: state.reminderList[index1].list,
-                                        date:state.reminderList[index1].dateAndTime>0?dateInt:0,
-                                        time:  timeInt==0?0:timeInt-1,
-                                        priority: state.reminderList[index1].priority,
-                                        createAt: state.reminderList[index1].createAt,)), child:EditReminderScreen(
-                                  ))));
-                              if(isUpdated )
-                              BlocProvider.of<ListBloc>(context).add(UpdateListScreenEvent(index: index, isUpdated: true));
-                            }
-                        ),
+                                        ..add(SetInfoEvent(
+                                          id: state.reminderList[index1].id,
+                                          title:
+                                              state.reminderList[index1].title,
+                                          notes:
+                                              state.reminderList[index1].notes,
+                                          list: state.reminderList[index1].list,
+                                          date: state.reminderList[index1]
+                                                      .dateAndTime >
+                                                  0
+                                              ? dateInt
+                                              : 0,
+                                          time: timeInt == 0 ? 0 : timeInt - 1,
+                                          priority: state
+                                              .reminderList[index1].priority,
+                                          createAt: state
+                                              .reminderList[index1].createAt,
+                                        )),
+                                      child: EditReminderScreen())));
+                          if (isUpdated)
+                            BlocProvider.of<ListBloc>(context).add(
+                                UpdateListScreenEvent(
+                                    index: index, isUpdated: true));
+                        }),
                         IconSlideWidget.delete(
                           () => {
                             showDialog(
@@ -171,22 +176,28 @@ class ListScreen extends StatelessWidget {
                                               softWrap: false,
                                               style: ThemeText.title),
                                         ),
-                                        getDetails(
-                                            index1, date, time, state)==null? SizedBox(): Padding(
-                                          padding: EdgeInsets.only(
-                                              top: ScreenUtil().setHeight(3)),
-                                          child: Container(
-                                            width:
-                                                ScreenUtil().screenWidth - 85,
-                                            child: Text(
-                                                getDetails(
-                                                    index1, date, time, state),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 5,
-                                                softWrap: false,
-                                                style: ThemeText.subtitle),
-                                          ),
-                                        ),
+                                        getDetails(index1, date, time, state) ==
+                                                null
+                                            ? SizedBox()
+                                            : Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: ScreenUtil()
+                                                        .setHeight(3)),
+                                                child: Container(
+                                                  width:
+                                                      ScreenUtil().screenWidth -
+                                                          85,
+                                                  child: Text(
+                                                      getDetails(index1, date,
+                                                          time, state),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 5,
+                                                      softWrap: false,
+                                                      style:
+                                                          ThemeText.subtitle),
+                                                ),
+                                              ),
                                         Container(
                                           margin: EdgeInsets.only(
                                               top: ScreenUtil().setHeight(10)),
@@ -213,15 +224,9 @@ class ListScreen extends StatelessWidget {
   }
 
   String getDetails(int index1, String date, String time, ListState state) {
-
     if (state.reminderList[index1].notes != '') {
-      if (state
-          .reminderList[index1].dateAndTime !=
-          0) {
-        if (state.reminderList[index1]
-            .dateAndTime %
-            10 ==
-            1) {
+      if (state.reminderList[index1].dateAndTime != 0) {
+        if (state.reminderList[index1].dateAndTime % 10 == 1) {
           return '${date == now ? 'Today' : date}, ${time} \n${state.reminderList[index1].notes}';
         } else {
           return '${date == now ? 'Today' : date}\n${state.reminderList[index1].notes}';
@@ -230,13 +235,8 @@ class ListScreen extends StatelessWidget {
         return '${state.reminderList[index1].notes}';
       }
     } else {
-      if (state
-          .reminderList[index1].dateAndTime !=
-          0) {
-        if (state.reminderList[index1]
-            .dateAndTime %
-            10 ==
-            1) {
+      if (state.reminderList[index1].dateAndTime != 0) {
+        if (state.reminderList[index1].dateAndTime % 10 == 1) {
           return '${date == now ? 'Today' : date}, ${time}';
         } else {
           return '${date == now ? 'Today' : date}';
@@ -246,11 +246,9 @@ class ListScreen extends StatelessWidget {
     }
   }
 
-
   Widget _appbar({@required BuildContext context, @required ListState state}) {
     var isUpdated;
     return AppbarWidgetForListScreen(
-
         context: context,
         onTapCreateNew: () async {
           isUpdated =
@@ -262,7 +260,6 @@ class ListScreen extends StatelessWidget {
           }
         },
         onTapCancel: () {
-          //  log(state.isUpdated.toString());
           Navigator.pop(context, state.isUpdated);
         });
   }

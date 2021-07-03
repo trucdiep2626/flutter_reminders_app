@@ -19,32 +19,22 @@ import '../bloc/homepage_event.dart';
 import '../../list/list/list_screen.dart';
 import '../../../../widgets_constants/confirm_dialog.dart';
 import '../../../../widgets_constants/icon_slide_widget.dart';
-
-import '../../reminders_list.dart';
 import '../homepage_constants.dart';
 
 class MyListsWidget extends StatelessWidget {
- // final String name;
   final int index;
   HomeState state;
   bool isUpdated;
   final int length;
-  /*final Color color;
-  final int length;
-   bool isUpdated;
-  final String createAt;*/
 
-  MyListsWidget(
-      {//@required this.color,
-      //@required this.name
-        @required this.state,
-      @required this.index,
-     @required this.length,
-    /*  @required this.createAt*/});
+  MyListsWidget({
+    @required this.state,
+    @required this.index,
+    @required this.length,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // log(state.myLists[index].color.toString());
     return Slidable(
       closeOnScroll: true,
       actionPane: SlidableDrawerActionPane(),
@@ -52,13 +42,17 @@ class MyListsWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: ScreenUtil().setWidth(10)),
           child: IconSlideWidget.edit(() async {
-             log(ColorConstants.colorMap[state.myLists[index].color].toString());
+            log(ColorConstants.colorMap[state.myLists[index].color].toString());
             isUpdated = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => BlocProvider<EditListBloc>(
-                    create: (context) => locator<EditListBloc>()..add(SetInfoOfListEvent(
-                          name: state.myLists[index].name, color: ColorConstants.colorMap[state.myLists[index].color], createAt: state.myLists[index].createAt)),
+                    create: (context) => locator<EditListBloc>()
+                      ..add(SetInfoOfListEvent(
+                          name: state.myLists[index].name,
+                          color: ColorConstants
+                              .colorMap[state.myLists[index].color],
+                          createAt: state.myLists[index].createAt)),
                     child: EditListScreen(),
                   ),
                 ));
@@ -71,7 +65,7 @@ class MyListsWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: ScreenUtil().setWidth(10)),
           child: IconSlideWidget.delete(() => {
-            state.myLists[index].name == 'Reminders'
+                state.myLists[index].name == 'Reminders'
                     ? showDialog(
                         context: context,
                         builder: (dialogContext) => AlertDialog(
@@ -142,7 +136,8 @@ class MyListsWidget extends StatelessWidget {
                 flex: 4,
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: HomePageConstant.listIconWidget(ColorConstants.colorMap[state.myLists[index].color]),
+                  child: HomePageConstant.listIconWidget(
+                      ColorConstants.colorMap[state.myLists[index].color]),
                 ),
               ),
               Expanded(
@@ -158,7 +153,7 @@ class MyListsWidget extends StatelessWidget {
               Expanded(
                   flex: 2,
                   child: Text(
-                    '${ length}',
+                    '${length}',
                     textAlign: TextAlign.right,
                     style: TextStyle(
                         fontSize: ScreenUtil().setSp(15),
@@ -177,7 +172,6 @@ class MyListsWidget extends StatelessWidget {
     BlocProvider.of<HomeBloc>(context)
       ..add(DeleteGroupEvent(indexGroup: index))
       ..add(UpdateEvent());
-    // BlocProvider.of<HomeBloc>(context).add(UpdateEvent( ));
     Navigator.pop(context);
   }
 }

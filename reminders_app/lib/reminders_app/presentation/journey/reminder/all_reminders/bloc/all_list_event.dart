@@ -7,11 +7,11 @@ abstract class AllRemindersEvent{
 }
 class DeleteReminderInAllScreenEvent extends AllRemindersEvent{
   final int id;
-  DeleteReminderInAllScreenEvent({this.id});
+  DeleteReminderInAllScreenEvent({@required this.id});
 }
 class UpdateAllListEvent extends AllRemindersEvent{
   final bool isUpdated;
-  UpdateAllListEvent({this.isUpdated});
+  UpdateAllListEvent({@required this.isUpdated});
 }
 
  

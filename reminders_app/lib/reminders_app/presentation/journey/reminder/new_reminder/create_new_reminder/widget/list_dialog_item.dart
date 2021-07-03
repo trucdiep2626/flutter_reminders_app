@@ -34,7 +34,7 @@ class ListItemWidget extends StatelessWidget {
                       padding: EdgeInsets.all(ScreenUtil().setWidth(5)),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: bgIcon?? Colors.blue,
+                        color: bgIcon ?? Colors.blue,
                       ),
                       child: Icon(
                         Icons.list,

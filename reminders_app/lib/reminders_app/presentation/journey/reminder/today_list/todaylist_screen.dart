@@ -15,14 +15,11 @@ import 'package:reminders_app/reminders_app/presentation/journey/reminder/today_
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import '../../../../../common/constants/route_constants.dart';
 import '../reminders_constants.dart';
-import '../../../../widgets_constants/appbar.dart';
 import '../../../../../common/extensions/date_extensions.dart';
 import '../../../../widgets_constants/appbar_for_list_screen.dart';
 import '../../../../widgets_constants/confirm_dialog.dart';
 import '../../../../widgets_constants/icon_slide_widget.dart';
 import 'bloc/today_list_state.dart';
-import 'bloc/today_list_stream.dart';
-import '../../reminders_list.dart';
 
 class TodayList extends StatelessWidget {
   var isUpdated;

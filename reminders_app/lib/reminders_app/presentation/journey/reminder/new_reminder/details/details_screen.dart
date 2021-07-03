@@ -1,24 +1,19 @@
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:intl/intl.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
-
 import '../../../../../../common/extensions/date_extensions.dart';
 import '../../../../../../common/enums/priority_type.dart';
 import '../../../../../../common/utils/priority_type_utils.dart';
 import '../../../home_page/homepage_constants.dart';
 import '../new_reminder_constants.dart';
 import 'bloc/add_details_bloc.dart';
-
 import 'bloc/add_details_event.dart';
-import 'bloc/details_stream.dart';
 import 'details_constants.dart';
 import 'widget/details_item.dart';
-import 'widget/priority_dialog.dart';
 import 'widget/priority_item.dart';
 import '../../../../../widgets_constants/appbar.dart';
 
@@ -30,9 +25,6 @@ class DetailsScreen extends StatelessWidget {
   int priority;
 
   DetailsScreen({this.date, this.time, this.priority});
-
-
-
 
   String selectedPriority = 'None';
 
@@ -70,10 +62,8 @@ class DetailsScreen extends StatelessWidget {
                         switchValue:
                             state.hasTime == true ? true : state.hasDate,
                         switchOnChanged: (bool value) {
-
-                            selectDate(context: context, hasDate: value);
-                         selectTime(context: context, hasTime: false);
-
+                          selectDate(context: context, hasDate: value);
+                          selectTime(context: context, hasTime: false);
                         },
                         onTapItem: () {
                           if (state.hasDate) {
@@ -95,12 +85,12 @@ class DetailsScreen extends StatelessWidget {
                         switchOnChanged: (bool value) {
                           if (state.hasDate)
                             selectTime(context: context, hasTime: value);
-                          else { selectTime(context: context, hasTime: value);
+                          else {
+                            selectTime(context: context, hasTime: value);
                             selectDate(
                                 context: context,
                                 hasDate: true,
                                 now: DateTime.now());
-
                           }
                         },
                         onTapItem: () {
@@ -125,7 +115,7 @@ class DetailsScreen extends StatelessWidget {
                         context: context,
                         builder: (dialogContext) =>
                             priorityDialog(context: context));
-                      },
+                  },
                   child: Padding(
                     padding: EdgeInsets.all(ScreenUtil().setHeight(8.0)),
                     child: Row(
@@ -242,9 +232,9 @@ class DetailsScreen extends StatelessWidget {
         time = (newTime.hour * 60 * 60 + newTime.minute * 60) * 1000 + 1;
         BlocProvider.of<AddDetailsBloc>(context)
             .add(SetTimeEvent(hasTime: hasTime, time: time));
+        log(time.toString());
       }
     } else {
-
       BlocProvider.of<AddDetailsBloc>(context)
           .add(SetTimeEvent(hasTime: false, time: 0));
     }
@@ -257,7 +247,6 @@ class DetailsScreen extends StatelessWidget {
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2015, 8),
-
             lastDate: DateTime(2101));
         if (picked != null) {
           date = DateTime.parse(DateFormat('yyyy-MM-dd').format(picked))
@@ -266,15 +255,16 @@ class DetailsScreen extends StatelessWidget {
               .add(SetDateEvent(hasDate: hasDate, date: date));
         }
       } else {
-
         date = 0;
         BlocProvider.of<AddDetailsBloc>(context)
             .add(SetDateEvent(hasDate: hasDate, date: 0));
       }
     } else {
-    date= now.millisecondsSinceEpoch- (TimeOfDay.now().hour* 60 * 60 + TimeOfDay.now().minute * 60) * 1000;
-      BlocProvider.of<AddDetailsBloc>(context).add(
-          SetDateEvent(hasDate: true, date: now.millisecondsSinceEpoch));
+      date = now.millisecondsSinceEpoch -(TimeOfDay.now().hour * 60 * 60 + TimeOfDay.now().minute * 60) * 1000-now.second*1000-now.millisecond;
+      log(now.millisecondsSinceEpoch.toString());
+      log(date.toString());
+      BlocProvider.of<AddDetailsBloc>(context)
+          .add(SetDateEvent(hasDate: true, date: date));
     }
   }
 
@@ -309,7 +299,7 @@ class DetailsScreen extends StatelessWidget {
         ),
       ),
       onTapCancel: () => {
-       // log('cancel'),
+        // log('cancel'),
         Navigator.pop(context),
       },
     );

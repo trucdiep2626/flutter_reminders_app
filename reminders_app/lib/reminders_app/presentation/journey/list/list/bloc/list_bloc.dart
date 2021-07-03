@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
 import 'package:reminders_app/reminders_app/domain/entities/group.dart';
@@ -8,13 +9,12 @@ import 'package:reminders_app/reminders_app/domain/usecases/group_usecase.dart';
 import 'package:reminders_app/reminders_app/domain/usecases/reminder_usecase.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_event.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/list/list/bloc/list_state.dart';
-import '../../../reminders_list.dart';
 
 class ListBloc extends Bloc<ListEvent, ListState> {
   final ReminderUseCase reminderUc;
   final GroupUsecase groupUc;
 
-  ListBloc({this.reminderUc, this.groupUc});
+  ListBloc({@required this.reminderUc,@required this.groupUc});
 
   @override
   ListState get initialState =>

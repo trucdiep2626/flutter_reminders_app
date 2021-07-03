@@ -2,14 +2,9 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/screen_util.dart';
-import 'package:reminders_app/common/config/local_config.dart';
-import 'package:reminders_app/common/constants/color_constants.dart';
 import 'package:reminders_app/common/enums/view_state.dart';
-import 'package:reminders_app/reminders_app/domain/entities/group.dart';
 import 'package:reminders_app/reminders_app/theme/theme.dart';
 import 'package:reminders_app/reminders_app/widgets_constants/flash_message.dart';
 import '../../../../common/constants/layout_constants.dart';
@@ -19,20 +14,16 @@ import 'bloc/homepage_event.dart';
 import 'homepage_constants.dart';
 import 'widget/my_lists_widget.dart';
 import 'bloc/home_state.dart';
-import '../../../../common/extensions/date_extensions.dart';
-import '../reminders_list.dart';
 import 'widget/bottom_navigation_bar.dart';
 import 'widget/grid_view_item.dart';
 import 'widget/search_bar.dart';
 
 class HomeScreen extends StatelessWidget {
-  var isUpdated  ;
+  var isUpdated;
   final TextEditingController textName = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    RemindersList.addDefaultList();
-
     return BlocConsumer<HomeBloc, HomeState>(listener: (context, state) {
       if (state.viewState == ViewState.success)
         ScaffoldMessenger.of(context).showSnackBar(FlashMessage(
@@ -64,13 +55,11 @@ class HomeScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         isUpdated = await Navigator.pushNamed(
-                                context, RouteList.todayListScreen);
-                          if (isUpdated) {
-                            BlocProvider.of<HomeBloc>(context)
-                                .add(UpdateEvent());
-                            isUpdated = false;
-                          }
-
+                            context, RouteList.todayListScreen);
+                        if (isUpdated) {
+                          BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                          isUpdated = false;
+                        }
                       },
                       child: GridViewItem(
                           icon: HomePageConstant.iconToday,
@@ -83,12 +72,10 @@ class HomeScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         isUpdated = await Navigator.pushNamed(
-                                context, RouteList.scheduledListScreen);
-                          if (isUpdated) {
-                            BlocProvider.of<HomeBloc>(context)
-                                .add(UpdateEvent());
-                         //   isUpdated = false;
-                          }
+                            context, RouteList.scheduledListScreen);
+                        if (isUpdated) {
+                          BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                        }
                       },
                       child: GridViewItem(
                           icon: HomePageConstant.iconScheduled,
@@ -106,13 +93,11 @@ class HomeScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () async {
                     isUpdated = await Navigator.pushNamed(
-                            context, RouteList.allListScreen) ;
+                        context, RouteList.allListScreen);
                     log(isUpdated.toString());
-                      if (isUpdated) {
-                        BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
-                     //   isUpdated = false;
-                      }
-
+                    if (isUpdated) {
+                      BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
+                    }
                   },
                   child: GridViewItem(
                       icon: HomePageConstant.iconAll,
@@ -139,18 +124,16 @@ class HomeScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                     horizontal: LayoutConstants.paddingHorizontalItem),
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: state.myLists.length==null?0:state.myLists.length,
+                    itemCount:
+                        state.myLists.length == null ? 0 : state.myLists.length,
                     itemBuilder: (context, index) {
-                  //  log(state.myLists[index].color);
                       return MyListsWidget(
-                    //    createAt:state.myLists[index].createAt ,
-                        //  color: ColorConstants.colorMap[state.myLists[index].color],
-                          //name: state.myLists[index].name,
                         state: state,
-                          index: index,
-                          length: state.listLength[state.myLists[index].name], );
+                        index: index,
+                        length: state.listLength[state.myLists[index].name],
+                      );
                     }),
               )
             ],

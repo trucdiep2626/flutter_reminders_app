@@ -43,7 +43,6 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
 
   Stream<NewReminderState> _mapGetAllGroupToState(
       GetAllGroupEvent event) async* {
-    log('get group');
     List<Group> lists = await groupUc.getAllGroup();
     yield state.update(myLists: null);
     yield state.update(myLists: lists);
@@ -52,10 +51,22 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
   Stream<NewReminderState> _mapCreateNewReminderToState(
       CreateNewReminderEvent event) async* {
     yield state.update(viewState: ViewState.busy);
-    log((await reminderUc.getLengthOfBox()).toString());
-    int lengthOfBox= (await reminderUc.getLengthOfBox());
+  //  int lengthOfBox= (await reminderUc.getLengthOfBox());
+    List<Reminder> allReminders = await reminderUc.getAllReminder();
+    int id;
+  if(allReminders.isNotEmpty)
+    {
+       id=allReminders[0].id;
+      for(int i=0;i<allReminders.length;i++)
+      {
+        if(id<allReminders[i].id)
+        {
+          id=allReminders[i].id;
+        }
+      }
+    }
     final Reminder reminder = Reminder(
-      id: lengthOfBox!=0?(await reminderUc.getReminder((await reminderUc.getLengthOfBox())-1)).id + 1:1,
+      id: allReminders.length!=0?id+ 1:1,
       title: state.title,
       notes: state.notes ?? '',
       list: state.list,
@@ -66,19 +77,17 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
       createAt: DateTime.now().millisecondsSinceEpoch,
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
-    //int result = await reminderUc.setReminder(reminder);
-    log('hihi');
+    log(reminder.id.toString()+"iddddđ");
     var result;
-    if(lengthOfBox==0)
+    if(allReminders.isEmpty)
       {
-        log('hihi');
         result = await reminderUc.setReminder(reminder);
       }
     else
       {
-        List<Reminder> allReminders = await reminderUc.getAllReminder();
+
         result = await reminderUc.setReminder(reminder);
-      if(lengthOfBox<2)
+      if(allReminders.length<2)
         {
           if(allReminders[0].priority== reminder.priority)
             {
@@ -121,9 +130,7 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
            }
          }
        }
-      log('hihi');
       result= await reminderUc.updateBox(allReminders);
-      log('hihi');
       }
 
     if (result != null) {

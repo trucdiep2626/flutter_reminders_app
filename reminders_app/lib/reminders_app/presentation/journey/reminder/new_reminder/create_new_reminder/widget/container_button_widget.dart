@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screen_util.dart';
-import 'package:intl/intl.dart';
-
-import '../../../../../../../common/extensions/date_extensions.dart';
-import '../../../../../../../common/enums/priority_type.dart';
-import '../../../../../../../common/utils/priority_type_utils.dart';
 
 class ContainerButtonWidget extends StatelessWidget {
   final String title;
@@ -62,12 +57,14 @@ class ContainerButtonWidget extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 3,
-                    child: subTitle != null ? Text(subTitle,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(12.5),
-                          color: Colors.grey,
-                        )) : SizedBox(),
+                    child: subTitle != null
+                        ? Text(subTitle,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: ScreenUtil().setSp(12.5),
+                              color: Colors.grey,
+                            ))
+                        : SizedBox(),
                   ),
                   Expanded(
                       flex: 1,
@@ -82,6 +79,4 @@ class ContainerButtonWidget extends StatelessWidget {
           ),
         ));
   }
-
-
 }

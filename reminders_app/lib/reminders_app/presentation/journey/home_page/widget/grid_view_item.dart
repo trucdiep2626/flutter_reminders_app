@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-class GridViewItem extends StatelessWidget{
-  Icon icon; Color bgColor; String title; int count;
 
-  GridViewItem({this.icon, this.bgColor, this.title, this.count});
+class GridViewItem extends StatelessWidget {
+  Icon icon;
+  Color bgColor;
+  String title;
+  int count;
+
+  GridViewItem(
+      {@required this.icon,
+      @required this.bgColor,
+      @required this.title,
+      @required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +22,12 @@ class GridViewItem extends StatelessWidget{
       child: Column(
         children: [
           Row(
-            //  crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
                 flex: 4,
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Container(
-                    // alignment: Alignment.topLeft,
                     padding: EdgeInsets.all(ScreenUtil().setWidth(5)),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -35,7 +40,7 @@ class GridViewItem extends StatelessWidget{
               Expanded(
                   flex: 1,
                   child: Text(
-                    '${count==null?0:count}',
+                    '${count == null ? 0 : count}',
                     textAlign: TextAlign.right,
                     style: TextStyle(
                         fontSize: ScreenUtil().setSp(25),
@@ -60,5 +65,4 @@ class GridViewItem extends StatelessWidget{
       ),
     );
   }
-
 }

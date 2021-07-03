@@ -4,12 +4,14 @@ import 'package:reminders_app/common/enums/view_state.dart';
 
 class EditListState extends Equatable {
   final String oldName;
+  final String newName;
   final Color selectedColor;
   final bool activeClearBtn;
   final ViewState viewState;
   final String createAt;
 
   EditListState({
+    this.newName,
     @required this.createAt,
     @required this.oldName,
     @required this.viewState,
@@ -17,10 +19,17 @@ class EditListState extends Equatable {
     this.activeClearBtn,
   });
 
-  EditListState update({Color selectedColor, bool activeClearBtn, ViewState viewState,String oldName, String createAt}) =>
+  EditListState update(
+          {Color selectedColor,
+          bool activeClearBtn,
+          ViewState viewState,
+          String oldName,
+            String newName,
+          String createAt}) =>
       EditListState(
-        createAt: createAt?? this.createAt,
-        oldName: oldName?? this.oldName,
+        newName: newName??this.newName,
+        createAt: createAt ?? this.createAt,
+        oldName: oldName ?? this.oldName,
         viewState: viewState ?? this.viewState,
         selectedColor: selectedColor ?? this.selectedColor,
         activeClearBtn: activeClearBtn ?? this.activeClearBtn,
@@ -28,10 +37,11 @@ class EditListState extends Equatable {
 
   @override
   List<Object> get props => [
-    this.createAt,
-    this.oldName,
-    this.viewState,
-    this.selectedColor,
-    this.activeClearBtn,
-  ];
+    this.newName,
+        this.createAt,
+        this.oldName,
+        this.viewState,
+        this.selectedColor,
+        this.activeClearBtn,
+      ];
 }

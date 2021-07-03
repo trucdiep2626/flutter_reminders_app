@@ -24,45 +24,40 @@ class ScheduledList extends StatelessWidget {
   var isUpdated;
   int id;
   String now = DateTime.now().dateDdMMyyyy;
-SlidableController slidableController = SlidableController();
+  SlidableController slidableController = SlidableController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ScheduledRemindersBloc,ScheduledRemindersState>(
-        builder: (context,state) {
-          return Scaffold(
-              backgroundColor: Colors.white,
-              appBar: _appbar(context: context, state: state),
-              body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: ScreenUtil().setHeight(10),
-                          left: ScreenUtil().setWidth(20)),
-                      child: Text(
-                        RemindersConstants.scheduledTxt,
-                        style: ThemeText.headlineListScreen
-                            .copyWith(color: Colors.red),
-                      ),
-                    ),
-                    (state.dateList.length == 0 || state.dateList.length == null)
-                        ? Padding(
-                      padding: EdgeInsets.only(
-                          top: ScreenUtil().screenHeight / 2 - 100),
-                      child: Align(
-                          alignment: Alignment.center,
-                          child: RemindersConstants.noReminders),
-                    )
-                        : scheduledListWidget(state),
-                  ]));
-        }
-    );
+    return BlocBuilder<ScheduledRemindersBloc, ScheduledRemindersState>(
+        builder: (context, state) {
+      return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: _appbar(context: context, state: state),
+          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  top: ScreenUtil().setHeight(10),
+                  left: ScreenUtil().setWidth(20)),
+              child: Text(
+                RemindersConstants.scheduledTxt,
+                style: ThemeText.headlineListScreen.copyWith(color: Colors.red),
+              ),
+            ),
+            (state.dateList.length == 0 || state.dateList.length == null)
+                ? Padding(
+                    padding: EdgeInsets.only(
+                        top: ScreenUtil().screenHeight / 2 - 100),
+                    child: Align(
+                        alignment: Alignment.center,
+                        child: RemindersConstants.noReminders),
+                  )
+                : scheduledListWidget(state),
+          ]));
+    });
   }
 
-  Widget scheduledListWidget(ScheduledRemindersState scheduledListState)
-  {
-    return  Expanded(
+  Widget scheduledListWidget(ScheduledRemindersState scheduledListState) {
+    return Expanded(
         child: Padding(
             padding: EdgeInsets.only(
               bottom: ScreenUtil().setHeight(12),
@@ -71,34 +66,29 @@ SlidableController slidableController = SlidableController();
             ),
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount:
-                scheduledListState.dateList.length,
+                itemCount: scheduledListState.dateList.length,
                 itemBuilder: (context, index) {
                   return Column(children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          top: ScreenUtil()
-                              .setHeight(10),
-                          left: ScreenUtil()
-                              .setWidth(20)),
+                          top: ScreenUtil().setHeight(10),
+                          left: ScreenUtil().setWidth(20)),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                            scheduledListState.dateList[
-                            index] ==
-                                now
+                            DateTime.fromMillisecondsSinceEpoch(scheduledListState.dateList[index]).dateDdMMyyyy == now
                                 ? 'Today'
-                                : scheduledListState
-                                .dateList[index],
-                            style: ThemeText
-                                .headline2ListScreen),
+                                :    DateTime.fromMillisecondsSinceEpoch(scheduledListState.dateList[index]).dateDdMMyyyy,
+                            style: ThemeText.headline2ListScreen),
                       ),
                     ),
                     getReminderOfDay(scheduledListState, index),
                   ]);
                 })));
   }
-  Widget getReminderOfDay(ScheduledRemindersState scheduledListState, int index) {
+
+  Widget getReminderOfDay(
+      ScheduledRemindersState scheduledListState, int index) {
     return ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -115,41 +105,82 @@ SlidableController slidableController = SlidableController();
               .dateDdMMyyyy;
           //  log(index1.toString()+'}}}}}}}}}}}}');
           return Slidable(
-              key: Key(scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id.toString()),
+              key: Key(scheduledListState
+                  .scheduledList[scheduledListState.dateList[index]][index1].id
+                  .toString()),
               controller: slidableController,
               closeOnScroll: true,
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: [
-                IconSlideWidget.edit(
-                        ()async{
-                      int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime)))
-                          .millisecondsSinceEpoch;
-                      int timeInt = scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime-dateInt;
-                      log((scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime).toString());
-                      log(dateInt.toString());
-                      log(timeInt.toString());
-                      isUpdated = await Navigator.push(context,  MaterialPageRoute(
-                          builder: (context) =>  BlocProvider<EditReminderBloc>(
+                IconSlideWidget.edit(() async {
+                  int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(
+                          DateTime.fromMillisecondsSinceEpoch(scheduledListState
+                              .scheduledList[scheduledListState.dateList[index]]
+                                  [index1]
+                              .dateAndTime)))
+                      .millisecondsSinceEpoch;
+                  int timeInt = scheduledListState
+                          .scheduledList[scheduledListState.dateList[index]]
+                              [index1]
+                          .dateAndTime -
+                      dateInt;
+                  log((scheduledListState
+                          .scheduledList[scheduledListState.dateList[index]]
+                              [index1]
+                          .dateAndTime)
+                      .toString());
+                  log(dateInt.toString());
+                  log(timeInt.toString());
+                  isUpdated = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BlocProvider<EditReminderBloc>(
                               create: (context) => locator<EditReminderBloc>()
-                                ..add(SetInfoEvent(        id:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].id ,
-                                  title: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].title,
-                                  notes: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes,
-                                  list: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].list,
-                                  date:scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].dateAndTime>0?dateInt:0,
-                                  time:  timeInt==0?0:timeInt-1,
-                                  priority: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].priority,
-                                  createAt: scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].createAt,))
-                                ..add(GetAllGroupEventInEditScreen()), child:EditReminderScreen(
-
-                          ))));
-                      if(isUpdated )
-                        BlocProvider.of<ScheduledRemindersBloc>(context).add(UpdateScheduledEvent(isUpdated: true));
-                    }
-                ),
+                                ..add(SetInfoEvent(
+                                  id: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .id,
+                                  title: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .title,
+                                  notes: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .notes,
+                                  list: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .list,
+                                  date: scheduledListState
+                                              .scheduledList[scheduledListState
+                                                  .dateList[index]][index1]
+                                              .dateAndTime >
+                                          0
+                                      ? dateInt
+                                      : 0,
+                                  time: timeInt == 0 ? 0 : timeInt - 1,
+                                  priority: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .priority,
+                                  createAt: scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .createAt,
+                                ))
+                                ..add(GetAllGroupEventInEditScreen()),
+                              child: EditReminderScreen())));
+                  if (isUpdated)
+                    BlocProvider.of<ScheduledRemindersBloc>(context)
+                        .add(UpdateScheduledEvent(isUpdated: true));
+                }),
                 IconSlideWidget.delete(() => {
                       showDialog(
                         context: context,
-                        builder: (_) => ConfirmDialog(      confirmText: 'Delete',
+                        builder: (_) => ConfirmDialog(
+                            confirmText: 'Delete',
                             content:
                                 'Are you sure you want to delete this reminder ?',
                             title: 'Delete ?',
@@ -157,7 +188,7 @@ SlidableController slidableController = SlidableController();
                               Navigator.pop(context);
                             },
                             onPressedOk: () => deleteReminder(
-                                context,scheduledListState, index, index1)),
+                                context, scheduledListState, index, index1)),
                       )
                     })
               ],
@@ -171,17 +202,17 @@ SlidableController slidableController = SlidableController();
                           width: ScreenUtil().setHeight(15),
                           height: ScreenUtil().setHeight(15),
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: RemindersConstants.getPriorityColor(
-                                scheduledListState
-                                    .scheduledList[scheduledListState
-                                    .dateList[index]][index1]
-                                    .priority)
-                                /*scheduledListState
+                              shape: BoxShape.circle,
+                              color: RemindersConstants.getPriorityColor(
+                                  scheduledListState
+                                      .scheduledList[scheduledListState
+                                          .dateList[index]][index1]
+                                      .priority)
+                              /*scheduledListState
                                     .scheduledList[scheduledListState
                                         .dateList[index]][index1]
                                     .priority),*/
-                          ),
+                              ),
                         ),
                         Padding(
                           padding:
@@ -192,11 +223,11 @@ SlidableController slidableController = SlidableController();
                                 Container(
                                   width: ScreenUtil().screenWidth - 85,
                                   child: Text(
-                                      /*RemindersList.allReminders[scheduledListState
+                                    /*RemindersList.allReminders[scheduledListState
                                       .dateList[index]][index1]
                                       .title,*/
-                                 scheduledListState
-                                      .scheduledList[scheduledListState
+                                    scheduledListState
+                                        .scheduledList[scheduledListState
                                             .dateList[index]][index1]
                                         .title,
                                     overflow: TextOverflow.ellipsis,
@@ -208,25 +239,29 @@ SlidableController slidableController = SlidableController();
                                         fontSize: ScreenUtil().setSp(17)),
                                   ),
                                 ),
-                                getDetails(scheduledListState, index,
-                                    index1, time)==null?SizedBox(): Padding(
-                                  padding: EdgeInsets.only(
-                                      top: ScreenUtil().setHeight(3)),
-                                  child: Container(
-                                    width: ScreenUtil().screenWidth - 85,
-                                    child: Text(
-                                      getDetails(scheduledListState, index,
-                                          index1, time),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 5,
-                                      softWrap: false,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey,
-                                          fontSize: ScreenUtil().setSp(12)),
-                                    ),
-                                  ),
-                                ),
+                                getDetails(scheduledListState, index, index1,
+                                            time) ==
+                                        null
+                                    ? SizedBox()
+                                    : Padding(
+                                        padding: EdgeInsets.only(
+                                            top: ScreenUtil().setHeight(3)),
+                                        child: Container(
+                                          width: ScreenUtil().screenWidth - 85,
+                                          child: Text(
+                                            getDetails(scheduledListState,
+                                                index, index1, time),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 5,
+                                            softWrap: false,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.grey,
+                                                fontSize:
+                                                    ScreenUtil().setSp(12)),
+                                          ),
+                                        ),
+                                      ),
                                 Container(
                                   margin: EdgeInsets.only(
                                       top: ScreenUtil().setHeight(10)),
@@ -245,47 +280,53 @@ SlidableController slidableController = SlidableController();
     id = scheduledListState
         .scheduledList[scheduledListState.dateList[index]][index1].id;
     BlocProvider.of<ScheduledRemindersBloc>(context)
-      ..add(DeleteReminderInScheduledScreenEvent(id:id))
+      ..add(DeleteReminderInScheduledScreenEvent(id: id))
       ..add(UpdateScheduledEvent(isUpdated: true));
     Navigator.pop(context);
   }
 
   String getDetails(ScheduledRemindersState scheduledListState, int index,
       int index1, String time) {
-    if (scheduledListState .scheduledList[scheduledListState.dateList[index]][index1] .dateAndTime % 10 == 1)
-      {
-        if(scheduledListState .scheduledList[scheduledListState.dateList[index]][index1].notes !='')
-          {
-            return '${time} \n${scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes}';
-          }
-        else
-          return time;
-      }
-    else
-      {
-        if(scheduledListState .scheduledList[scheduledListState.dateList[index]][index1].notes !='')
-        {
-          return '${scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes}';
-        }
-        else
-          return null;
-      }
-
+    if (scheduledListState
+                .scheduledList[scheduledListState.dateList[index]][index1]
+                .dateAndTime %
+            10 ==
+        1) {
+      if (scheduledListState
+              .scheduledList[scheduledListState.dateList[index]][index1]
+              .notes !=
+          '') {
+        return '${time} \n${scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes}';
+      } else
+        return time;
+    } else {
+      if (scheduledListState
+              .scheduledList[scheduledListState.dateList[index]][index1]
+              .notes !=
+          '') {
+        return '${scheduledListState.scheduledList[scheduledListState.dateList[index]][index1].notes}';
+      } else
+        return null;
+    }
   }
-  Widget _appbar({@required BuildContext context,@required ScheduledRemindersState state})
-  {
-    return AppbarWidgetForListScreen(context:context,onTapCreateNew: () async {
-      isUpdated = await Navigator.pushNamed(context, RouteList.createNewScreen);
 
-      if(isUpdated)
-      {
-        BlocProvider.of<ScheduledRemindersBloc>(context).add(UpdateScheduledEvent(isUpdated: true));
+  Widget _appbar(
+      {@required BuildContext context,
+      @required ScheduledRemindersState state}) {
+    return AppbarWidgetForListScreen(
+        context: context,
+        onTapCreateNew: () async {
+          isUpdated =
+              await Navigator.pushNamed(context, RouteList.createNewScreen);
 
-      }
-
-    },
-        onTapCancel: (){
+          if (isUpdated) {
+            BlocProvider.of<ScheduledRemindersBloc>(context)
+                .add(UpdateScheduledEvent(isUpdated: true));
+          }
+        },
+        onTapCancel: () {
           log(state.isUpdated.toString());
-          Navigator.pop(context,state.isUpdated);});
+          Navigator.pop(context, state.isUpdated);
+        });
   }
 }

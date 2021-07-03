@@ -13,11 +13,13 @@ import 'package:reminders_app/common/extensions/date_extensions.dart';
 class AddListBloc extends Bloc<AddListEvent, AddListState> {
   final GroupUsecase groupUc;
 
-  AddListBloc({this.groupUc});
+  AddListBloc({@required this.groupUc});
 
   @override
-  AddListState get initialState =>
-      AddListState(selectedColor: Colors.blue, activeAddBtn: false,viewState: ViewState.idle);
+  AddListState get initialState => AddListState(
+      selectedColor: Colors.blue,
+      activeAddBtn: false,
+      viewState: ViewState.idle);
 
   @override
   Stream<AddListState> mapEventToState(AddListEvent event) async* {
@@ -30,32 +32,29 @@ class AddListBloc extends Bloc<AddListEvent, AddListState> {
     if (event is CreateNewListEvent) {
       yield* _mapCreateNewListEventToState(event);
     }
-    if(event is UpdateViewStateEvent)
-      {
-        yield* _mapUpdateViewStateEventToState(event);
-      }
+    if (event is UpdateViewStateEvent) {
+      yield* _mapUpdateViewStateEventToState(event);
+    }
   }
-  Stream<AddListState> _mapUpdateViewStateEventToState(UpdateViewStateEvent event) async*
-  {
+
+  Stream<AddListState> _mapUpdateViewStateEventToState(
+      UpdateViewStateEvent event) async* {
     yield state.update(viewState: ViewState.busy);
   }
+
   Stream<AddListState> _mapCreateNewListEventToState(
       CreateNewListEvent event) async* {
-
     yield state.update(viewState: ViewState.busy);
-    //log((await groupUc.getGroupByName(event.name).toString()));
     if ((await groupUc.getGroupByName(event.name) != null)) {
       yield state.update(viewState: ViewState.showDialog);
-    }else
-      {
+    } else {
       final Group group = Group(
         name: event.name,
-        color: ColorConstants.setColorString(event.color)  ,
+        color: ColorConstants.setColorString(event.color),
         createAt: DateTime.now().dateDdMMyyyy,
         lastUpdate: DateTime.now().dateDdMMyyyy,
       );
       int result = await groupUc.setGroup(group);
-
       if (result != null) {
         log('success');
         yield state.update(viewState: ViewState.success);
@@ -65,8 +64,6 @@ class AddListBloc extends Bloc<AddListEvent, AddListState> {
       yield state.update(viewState: ViewState.error);
     }
 
-
-    
     log('add list');
   }
 
@@ -80,7 +77,6 @@ class AddListBloc extends Bloc<AddListEvent, AddListState> {
 
   Stream<AddListState> _mapSelectColorEventToState(
       SelectColorEvent event) async* {
-  
     final Color selectedColor = event.color;
     yield state.update(
       selectedColor: selectedColor,

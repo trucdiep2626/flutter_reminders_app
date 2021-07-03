@@ -1,15 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:reminders_app/common/injector.dart';
 import 'package:reminders_app/reminders_app/presentation/journey/home_page/bloc/home_state.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/bloc/add_list_bloc.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/list/new_list/create_new_list.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_bloc.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/bloc/new_reminder_event.dart';
-import 'package:reminders_app/reminders_app/presentation/journey/reminder/new_reminder/create_new_reminder/create_new_reminder.dart';
 import '../../../../../common/constants/route_constants.dart';
 import '../bloc/homepage_bloc.dart';
 import '../bloc/homepage_event.dart';
@@ -23,7 +16,6 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //int value;
     Color listColor = Colors.blue;
     return Container(
       padding: EdgeInsets.all(ScreenUtil().setWidth(15)),
@@ -34,11 +26,9 @@ class BottomBar extends StatelessWidget {
               child: GestureDetector(
                   onTap: () async {
                     isUpdated = await Navigator.pushNamed(context,RouteList.createNewScreen);
-
                     log(isUpdated.toString() + "update");
                     if (isUpdated) {
                       BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
-                      //   isUpdated=false;
                     }
                   },
                   child: Row(children: [
@@ -71,7 +61,6 @@ class BottomBar extends StatelessWidget {
                   await Navigator.pushNamed(context, RouteList.createNewList);
                 if (isUpdated) {
                   BlocProvider.of<HomeBloc>(context).add(UpdateEvent());
-                  // isUpdated=false;
                 }
 
             },

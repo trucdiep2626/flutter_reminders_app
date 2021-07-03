@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import '../../new_reminder_constants.dart';
-import '../bloc/reminder_stream.dart';
 import 'text_field.dart';
 
 class ReminderFormWidget extends StatelessWidget {
@@ -12,8 +11,8 @@ class ReminderFormWidget extends StatelessWidget {
 
   const ReminderFormWidget(
       {Key key,
-     @required this.onChangeTitle,
-        @required  this.onChangeNotes,
+      @required this.onChangeTitle,
+      @required this.onChangeNotes,
       this.notesController,
       this.titleController})
       : super(key: key);

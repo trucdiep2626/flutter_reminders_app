@@ -18,7 +18,6 @@ import 'widget/list_dialog_item.dart';
 import 'widget/reminder_form_widget.dart';
 import '../details/bloc/add_details_bloc.dart';
 import '../details/details_screen.dart';
-import '../../../reminders_list.dart';
 import '../../../../../widgets_constants/appbar.dart';
 import 'bloc/reminder_state.dart';
 

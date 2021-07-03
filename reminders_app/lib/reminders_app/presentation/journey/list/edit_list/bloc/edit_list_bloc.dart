@@ -19,14 +19,12 @@ class EditListBloc extends Bloc<EditListEvent, EditListState> {
   EditListBloc({@required this.groupUc, @required this.reminderUc});
 
   @override
-  EditListState get initialState => EditListState(
-  //  selectedColor: Colors.blue,
-      activeClearBtn: true,
-      viewState: ViewState.idle);
+  EditListState get initialState =>
+      EditListState(activeClearBtn: true, viewState: ViewState.idle);
 
   @override
   Stream<EditListState> mapEventToState(EditListEvent event) async* {
-    if (event is SelectColorEvent) {
+    if (event is EditColorEvent) {
       yield* _mapSelectColorEventToState(event);
     }
     if (event is UpdateListEvent) {
@@ -41,19 +39,31 @@ class EditListBloc extends Bloc<EditListEvent, EditListState> {
     if (event is ActiveClearButtonEvent) {
       yield* _mapActiveClearButtonEventToState(event);
     }
+    if (event is EditNameEvent) {
+      yield* _mapEditNameEventToState(event);
+    }
   }
+  Stream<EditListState> _mapEditNameEventToState(
+      EditNameEvent event) async* {
+    yield state.update(newName: event.name
+    );
+  }
+
+
   Stream<EditListState> _mapActiveClearButtonEventToState(
       ActiveClearButtonEvent event) async* {
     yield state.update(
-      activeClearBtn:  event.activeClearButton,
+      activeClearBtn: event.activeClearButton,
     );
   }
 
   Stream<EditListState> _mapSetInfoOfListEventToState(
       SetInfoOfListEvent event) async* {
-    //log(ColorConstants.getColorString(event.color)+">>>>>>>>>>>>>>>>>");
-    yield state.update(selectedColor: event.color, oldName: event.name,createAt: event.createAt);
-   // log(ColorConstants.getColorString(state.selectedColor)+">>>>>>>>>>>>>>>>>");
+    yield state.update(
+      newName: event.name,
+        selectedColor: event.color,
+        oldName: event.name,
+        createAt: event.createAt);
   }
 
   Stream<EditListState> _mapUpdateViewStateEventToState(
@@ -64,34 +74,27 @@ class EditListBloc extends Bloc<EditListEvent, EditListState> {
   Stream<EditListState> _mapUpdateListEventToState(
       UpdateListEvent event) async* {
     yield state.update(viewState: ViewState.busy);
-    log(event.color.toString()+"))))))))))))))))))))))");
-  log(ColorConstants.getColorString(event.color));
-      final Group group = Group(
-        name: event.name,
-        color: ColorConstants.getColorString(event.color),
-        createAt: state.createAt,
-        lastUpdate: DateTime.now().dateDdMMyyyy,
-      );
-      log(group.color);
-      var result = await groupUc.updateGroup(state.oldName, group);
-      if(group.name!=state.oldName)
-        {
-          await reminderUc.updateListOfReminders(state.oldName, group.name);
-        }
-
-      if (result == true) {
-        log('success');
-        yield state.update(viewState: ViewState.success);
-        return;
-      }
-      log('error');
-      yield state.update(viewState: ViewState.error);
-
+    final Group group = Group(
+      name: event.name,
+      color: ColorConstants.setColorString(event.color)?? ColorConstants.getColorString(event.color),
+      createAt: state.createAt,
+      lastUpdate: DateTime.now().dateDdMMyyyy,
+    );
+    var result = await groupUc.updateGroup(state.oldName, group);
+    if (group.name != state.oldName) {
+      await reminderUc.updateListOfReminders(state.oldName, group.name);
+    }
+    if (result == true) {
+      log('success');
+      yield state.update(viewState: ViewState.success);
+      return;
+    }
+    log('error');
+    yield state.update(viewState: ViewState.error);
   }
-  
 
   Stream<EditListState> _mapSelectColorEventToState(
-      SelectColorEvent event) async* {
+      EditColorEvent event) async* {
     final Color selectedColor = event.color;
     yield state.update(
       selectedColor: selectedColor,
