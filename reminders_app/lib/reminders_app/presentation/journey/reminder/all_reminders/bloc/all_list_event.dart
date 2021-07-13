@@ -13,5 +13,3 @@ class UpdateAllListEvent extends AllRemindersEvent{
   final bool isUpdated;
   UpdateAllListEvent({@required this.isUpdated});
 }
-
- 

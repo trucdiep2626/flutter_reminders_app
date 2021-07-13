@@ -7,6 +7,7 @@ import 'package:reminders_app/reminders_app/presentation/journey/reminder/schedu
 import 'package:reminders_app/reminders_app/presentation/journey/reminder/scheduled_list/bloc/scheduled_list_state.dart';
 
 import 'package:reminders_app/common/extensions/date_extensions.dart';
+
 class ScheduledRemindersBloc
     extends Bloc<ScheduledRemindersEvent, ScheduledRemindersState> {
   final ReminderUseCase reminderUc;
@@ -15,7 +16,7 @@ class ScheduledRemindersBloc
 
   @override
   ScheduledRemindersState get initialState =>
-      ScheduledRemindersState(dateList: [], scheduledList: {},isUpdated:false);
+      ScheduledRemindersState(scheduledList: [], isUpdated: false);
 
   @override
   Stream<ScheduledRemindersState> mapEventToState(
@@ -23,13 +24,13 @@ class ScheduledRemindersBloc
     if (event is UpdateScheduledEvent) {
       yield* _mapUpdateEventToState(event);
     }
-    if(event is DeleteReminderInScheduledScreenEvent)
-    {
+    if (event is DeleteReminderInScheduledScreenEvent) {
       yield* _mapDeleteReminderEventToState(event);
     }
-
   }
-  Stream<ScheduledRemindersState> _mapDeleteReminderEventToState(DeleteReminderInScheduledScreenEvent event) async* {
+
+  Stream<ScheduledRemindersState> _mapDeleteReminderEventToState(
+      DeleteReminderInScheduledScreenEvent event) async* {
     await reminderUc.deleteReminder(event.id);
     log('deleted');
   }
@@ -37,13 +38,15 @@ class ScheduledRemindersBloc
   Stream<ScheduledRemindersState> _mapUpdateEventToState(
       UpdateScheduledEvent event) async* {
     List<int> dateList = await reminderUc.getAllDate();
-    Map<int, List<Reminder>> scheduledList = {};
+    List<Reminder> scheduledList = [];
     for (int i = 0; i < dateList.length; i++) {
-      scheduledList.addAll(
-          {dateList[i]: (await reminderUc.getReminderOfDay(DateTime.fromMillisecondsSinceEpoch(dateList[i]).dateDdMMyyyy))});
+      scheduledList.addAll((await reminderUc.getReminderOfDay(
+          DateTime.fromMillisecondsSinceEpoch(dateList[i]).dateDdMMyyyy)));
     }
-    state.update(dateList: null, scheduledList: null);
-    yield state.update(dateList: dateList, scheduledList: scheduledList,isUpdated: event.isUpdated);
+    log(scheduledList.length.toString());
+    state.update(scheduledList: null);
+    yield state.update(
+        scheduledList: scheduledList, isUpdated: event.isUpdated);
     log("scheduled list update");
   }
 }

@@ -32,60 +32,60 @@ class AllRemindersList extends StatelessWidget {
     int id;
     return BlocBuilder<AllRemindersBloc, AllRemindersState>(
         builder: (context, state) {
-      return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: _appbar(context: context, state: state),
-          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  top: ScreenUtil().setHeight(10),
-                  left: ScreenUtil().setWidth(20)),
-              child: Text(RemindersConstants.allTxt,
-                  style: ThemeText.headlineListScreen
-                      .copyWith(color: Colors.black)),
-            ),
-            Expanded(
-                child: Padding(
-              padding: EdgeInsets.only(
-                bottom: ScreenUtil().setHeight(12),
-                right: ScreenUtil().setWidth(12),
-                left: ScreenUtil().setWidth(20),
-              ),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: state.myLists.length,
-                  itemBuilder: (context, index) {
-                    return Column(children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: ScreenUtil().setHeight(10),
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            state.myLists[index].name,
-                            style: ThemeText.headline2ListScreen.copyWith(
-                                color: ColorConstants
-                                    .colorMap[state.myLists[index].color]),
-                          ),
-                        ),
+          return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: _appbar(context: context, state: state),
+              body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: ScreenUtil().setHeight(10),
+                      left: ScreenUtil().setWidth(20)),
+                  child: Text(RemindersConstants.allTxt,
+                      style: ThemeText.headlineListScreen
+                          .copyWith(color: Colors.black)),
+                ),
+                Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: ScreenUtil().setHeight(12),
+                        right: ScreenUtil().setWidth(12),
+                        left: ScreenUtil().setWidth(20),
                       ),
-                      state.remindersOfList[state.myLists[index].name].length ==
-                              0
-                          ? Padding(
-                              padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(20),
-                                  bottom: ScreenUtil().setHeight(20)),
-                              child: Align(
-                                  alignment: Alignment.center,
-                                  child: RemindersConstants.noReminders),
-                            )
-                          : getReminderOfList(index, state)
-                    ]);
-                  }),
-            ))
-          ]));
-    });
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.myLists.length,
+                          itemBuilder: (context, index) {
+                            return Column(children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: ScreenUtil().setHeight(10),
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    state.myLists[index].name,
+                                    style: ThemeText.headline2ListScreen.copyWith(
+                                        color: ColorConstants
+                                            .colorMap[state.myLists[index].color]),
+                                  ),
+                                ),
+                              ),
+                              state.remindersOfList[state.myLists[index].name].length ==
+                                  0
+                                  ? Padding(
+                                padding: EdgeInsets.only(
+                                    top: ScreenUtil().setHeight(20),
+                                    bottom: ScreenUtil().setHeight(20)),
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: RemindersConstants.noReminders),
+                              )
+                                  : getReminderOfList(index, state)
+                            ]);
+                          }),
+                    ))
+              ]));
+        });
   }
 
   Widget getReminderOfList(int index, AllRemindersState state) {
@@ -95,12 +95,12 @@ class AllRemindersList extends StatelessWidget {
         itemCount: state.remindersOfList[state.myLists[index].name].length,
         itemBuilder: (context, index1) {
           String time = (DateTime.fromMillisecondsSinceEpoch(state
-                  .remindersOfList[state.myLists[index].name][index1]
-                  .dateAndTime)
+              .remindersOfList[state.myLists[index].name][index1]
+              .dateAndTime)
               .hourHHmm);
           String date = DateTime.fromMillisecondsSinceEpoch(state
-                  .remindersOfList[state.myLists[index].name][index1]
-                  .dateAndTime)
+              .remindersOfList[state.myLists[index].name][index1]
+              .dateAndTime)
               .dateDdMMyyyy;
           log("id="+state
               .remindersOfList[state.myLists[index].name][index1].id.toString());
@@ -115,14 +115,14 @@ class AllRemindersList extends StatelessWidget {
               secondaryActions: [
                 IconSlideWidget.edit(() async {
                   int dateInt = DateTime.parse(DateFormat('yyyy-MM-dd').format(
-                          DateTime.fromMillisecondsSinceEpoch(state
-                              .remindersOfList[state.myLists[index].name]
-                                  [index1]
-                              .dateAndTime)))
+                      DateTime.fromMillisecondsSinceEpoch(state
+                          .remindersOfList[state.myLists[index].name]
+                      [index1]
+                          .dateAndTime)))
                       .millisecondsSinceEpoch;
                   int timeInt = state
-                          .remindersOfList[state.myLists[index].name][index1]
-                          .dateAndTime -
+                      .remindersOfList[state.myLists[index].name][index1]
+                      .dateAndTime -
                       dateInt;
 
                   isUpdated = await Navigator.push(
@@ -133,35 +133,35 @@ class AllRemindersList extends StatelessWidget {
                                 ..add(SetInfoEvent(
                                   id: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .id,
                                   title: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .title,
                                   notes: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .notes,
                                   list: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .list,
                                   date: state
-                                              .remindersOfList[state
-                                                  .myLists[index].name][index1]
-                                              .dateAndTime >
-                                          0
+                                      .remindersOfList[state
+                                      .myLists[index].name][index1]
+                                      .dateAndTime >
+                                      0
                                       ? dateInt
                                       : 0,
                                   time: timeInt == 0 ? 0 : timeInt - 1,
                                   priority: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .priority,
                                   createAt: state
                                       .remindersOfList[
-                                          state.myLists[index].name][index1]
+                                  state.myLists[index].name][index1]
                                       .createAt,
                                 ))
                                 ..add(GetAllGroupEventInEditScreen()),
@@ -171,13 +171,13 @@ class AllRemindersList extends StatelessWidget {
                         .add(UpdateAllListEvent(isUpdated: true));
                 }),
                 IconSlideWidget.delete(
-                  () => {
+                      () => {
                     showDialog(
                       context: context,
                       builder: (dialogContext) => ConfirmDialog(
                           confirmText: 'Delete',
                           content:
-                              'Are you sure you want to delete this reminder ?',
+                          'Are you sure you want to delete this reminder ?',
                           title: 'Delete ?',
                           onPressedCancel: () {
                             Navigator.pop(context);
@@ -204,13 +204,13 @@ class AllRemindersList extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: RemindersConstants.getPriorityColor(state
                                 .remindersOfList[state.myLists[index].name]
-                                    [index1]
+                            [index1]
                                 .priority),
                           ),
                         ),
                         Padding(
                           padding:
-                              EdgeInsets.only(left: ScreenUtil().setWidth(20)),
+                          EdgeInsets.only(left: ScreenUtil().setWidth(20)),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -219,7 +219,7 @@ class AllRemindersList extends StatelessWidget {
                                   child: Text(
                                       state
                                           .remindersOfList[
-                                              state.myLists[index].name][index1]
+                                      state.myLists[index].name][index1]
                                           .title,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 5,
@@ -227,23 +227,23 @@ class AllRemindersList extends StatelessWidget {
                                       style: ThemeText.title),
                                 ),
                                 getDetails(index, index1, date, time, state) ==
-                                        null
+                                    null
                                     ? SizedBox()
                                     : Padding(
-                                        padding: EdgeInsets.only(
-                                            top: ScreenUtil().setHeight(3)),
-                                        child: Container(
-                                          width: ScreenUtil().screenWidth - 85,
-                                          child: Text(
-                                            getDetails(index, index1, date,
-                                                time, state),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 5,
-                                            softWrap: false,
-                                            style: ThemeText.subtitle,
-                                          ),
-                                        ),
-                                      ),
+                                  padding: EdgeInsets.only(
+                                      top: ScreenUtil().setHeight(3)),
+                                  child: Container(
+                                    width: ScreenUtil().screenWidth - 85,
+                                    child: Text(
+                                      getDetails(index, index1, date,
+                                          time, state),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 5,
+                                      softWrap: false,
+                                      style: ThemeText.subtitle,
+                                    ),
+                                  ),
+                                ),
                                 Container(
                                   margin: EdgeInsets.only(
                                       top: ScreenUtil().setHeight(10)),
@@ -261,11 +261,11 @@ class AllRemindersList extends StatelessWidget {
       AllRemindersState state) {
     if (state.remindersOfList[state.myLists[index].name][index1].notes != '') {
       if (state
-              .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
+          .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
           0) {
         if (state.remindersOfList[state.myLists[index].name][index1]
-                    .dateAndTime %
-                10 ==
+            .dateAndTime %
+            10 ==
             1) {
           return '${date == now ? 'Today' : date}, ${time} \n${state.remindersOfList[state.myLists[index].name][index1].notes}';
         } else {
@@ -276,11 +276,11 @@ class AllRemindersList extends StatelessWidget {
       }
     } else {
       if (state
-              .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
+          .remindersOfList[state.myLists[index].name][index1].dateAndTime !=
           0) {
         if (state.remindersOfList[state.myLists[index].name][index1]
-                    .dateAndTime %
-                10 ==
+            .dateAndTime %
+            10 ==
             1) {
           return '${date == now ? 'Today' : date}, ${time}';
         } else {
@@ -307,7 +307,7 @@ class AllRemindersList extends StatelessWidget {
         context: context,
         onTapCreateNew: () async {
           isUpdated =
-              await Navigator.pushNamed(context, RouteList.createNewScreen);
+          await Navigator.pushNamed(context, RouteList.createNewScreen);
 
           if (isUpdated) {
             BlocProvider.of<AllRemindersBloc>(context)
@@ -319,3 +319,350 @@ class AllRemindersList extends StatelessWidget {
         });
   }
 }
+//
+// class AllRemindersList extends StatelessWidget {
+//   var isUpdated;
+//   String now = DateTime.now().dateDdMMyyyy;
+//   final SlidableController slidableController = SlidableController();
+//   @override
+//   Widget build(BuildContext context) {
+//     int id;
+//
+//     return BlocBuilder<AllRemindersBloc, AllRemindersState>(
+//         builder: (context, state) {
+//       return Scaffold(
+//           backgroundColor: Colors.white,
+//           appBar: _appbar(context: context, state: state),
+//           body: ListView( children: [
+//
+//             Padding(
+//               padding: EdgeInsets.only(
+//                   top: ScreenUtil().setHeight(10),
+//                   left: ScreenUtil().setWidth(20)),
+//               child: Text(RemindersConstants.allTxt,
+//                   style: ThemeText.headlineListScreen
+//                       .copyWith(color: Colors.black)),
+//             ),
+//             Expanded(
+//               flex: state.remindersOfList.length,
+//                 child: Padding(
+//                     padding: EdgeInsets.only(
+//                       bottom: ScreenUtil().setHeight(12),
+//                       right: ScreenUtil().setWidth(12),
+//                       left: ScreenUtil().setWidth(20),
+//                     ),
+//                     child:groupedLists(state))),
+//             Expanded(
+//               flex: state.emptyLists.length,
+//                 child: Padding(
+//                     padding: EdgeInsets.only(
+//                       bottom: ScreenUtil().setHeight(12),
+//                       right: ScreenUtil().setWidth(12),
+//                       left: ScreenUtil().setWidth(20),
+//                     ),
+//                     child:emptyLists(state))),
+//             SizedBox(
+//               height: 10,
+//             )
+//           ]));
+//     });
+//   }
+//
+//     Widget groupedLists(AllRemindersState state)
+//     {
+//       return GroupedListView<Reminder, String>(
+//           sort: false,
+//           semanticChildCount: 0,
+//           shrinkWrap: true,
+//           order: GroupedListOrder.ASC,
+//           stickyHeaderBackgroundColor: Colors.transparent,
+//           useStickyGroupSeparators: false,
+//           elements: state.remindersOfList,
+//           groupBy: (Reminder element) => element.list,
+//           groupSeparatorBuilder: (String value) => Padding(
+//             padding: EdgeInsets.only(
+//               top: ScreenUtil().setHeight(10),
+//             ),
+//             child: Align(
+//               alignment: Alignment.centerLeft,
+//               child: Text(
+//                 value,
+//                 style: ThemeText.headline2ListScreen
+//                     .copyWith(
+//                     color: ColorConstants.colorMap[
+//                     getColorOfList(
+//                         value, state)]),
+//               ),
+//             ),
+//           ),
+//           itemBuilder: (context, element) {
+//             String time =
+//             (DateTime.fromMillisecondsSinceEpoch(
+//                 element.dateAndTime)
+//                 .hourHHmm);
+//             String date = DateTime.fromMillisecondsSinceEpoch(
+//                 element.dateAndTime)
+//                 .dateDdMMyyyy;
+//
+//             return Slidable(
+//                 key: Key(element.id.toString()),
+//                 controller: slidableController,
+//                 //   movementDuration: Duration(seconds: 1),
+//                 closeOnScroll: true,
+//                 actionPane: SlidableDrawerActionPane(),
+//                 secondaryActions: [
+//                   IconSlideWidget.edit(() async {
+//                     int dateInt = DateTime.parse(DateFormat(
+//                         'yyyy-MM-dd')
+//                         .format(DateTime
+//                         .fromMillisecondsSinceEpoch(
+//                         element.dateAndTime)))
+//                         .millisecondsSinceEpoch;
+//                     int timeInt =
+//                         element.dateAndTime - dateInt;
+//
+//                     isUpdated = await Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) => BlocProvider<
+//                                 EditReminderBloc>(
+//                                 create: (context) => locator<
+//                                     EditReminderBloc>()
+//                                   ..add(SetInfoEvent(
+//                                     id: element.id,
+//                                     title: element.title,
+//                                     notes: element.notes,
+//                                     list: element.list,
+//                                     date:
+//                                     element.dateAndTime >
+//                                         0
+//                                         ? dateInt
+//                                         : 0,
+//                                     time: timeInt == 0
+//                                         ? 0
+//                                         : timeInt - 1,
+//                                     priority:
+//                                     element.priority,
+//                                     createAt:
+//                                     element.createAt,
+//                                   ))
+//                                   ..add(
+//                                       GetAllGroupEventInEditScreen()),
+//                                 child:
+//                                 EditReminderScreen())));
+//                     if (isUpdated)
+//                       BlocProvider.of<AllRemindersBloc>(
+//                           context)
+//                           .add(UpdateAllListEvent(
+//                           isUpdated: true));
+//                   }),
+//                   IconSlideWidget.delete(
+//                         () => {
+//                       showDialog(
+//                         context: context,
+//                         builder: (dialogContext) =>
+//                             ConfirmDialog(
+//                                 confirmText: 'Delete',
+//                                 content:
+//                                 'Are you sure you want to delete this reminder ?',
+//                                 title: 'Delete ?',
+//                                 onPressedCancel: () {
+//                                   Navigator.pop(context);
+//                                 },
+//                                 onPressedOk: () =>
+//                                     _deleteReminder(
+//                                         reminder: element,
+//                                         context: context)),
+//                       )
+//                     },
+//                   )
+//                 ],
+//                 actionExtentRatio: 0.2,
+//                 child: Container(
+//                     padding: EdgeInsets.only(
+//                         top: ScreenUtil().setHeight(10)),
+//                     child: Row(
+//                         crossAxisAlignment:
+//                         CrossAxisAlignment.start,
+//                         children: [
+//                           Container(
+//                             width: 15.h,
+//                             height: 15.h,
+//                             decoration: BoxDecoration(
+//                               shape: BoxShape.circle,
+//                               color: RemindersConstants
+//                                   .getPriorityColor(
+//                                   element.priority),
+//                             ),
+//                           ),
+//                           Padding(
+//                             padding: EdgeInsets.only(
+//                                 left: ScreenUtil()
+//                                     .setWidth(20)),
+//                             child: Column(
+//                                 crossAxisAlignment:
+//                                 CrossAxisAlignment.start,
+//                                 children: [
+//                                   Container(
+//                                     width: ScreenUtil()
+//                                         .screenWidth -
+//                                         85,
+//                                     child: Text(element.title,
+//                                         overflow: TextOverflow
+//                                             .ellipsis,
+//                                         maxLines: 5,
+//                                         softWrap: false,
+//                                         style:
+//                                         ThemeText.title),
+//                                   ),
+//                                   getDetails(
+//                                       date: date,
+//                                       time: time,
+//                                       reminder:
+//                                       element) ==
+//                                       null
+//                                       ? SizedBox()
+//                                       : Padding(
+//                                     padding: EdgeInsets.only(
+//                                         top: ScreenUtil()
+//                                             .setHeight(
+//                                             3)),
+//                                     child: Container(
+//                                       width: ScreenUtil()
+//                                           .screenWidth -
+//                                           85,
+//                                       child: Text(
+//                                         getDetails(
+//                                             date: date,
+//                                             time: time,
+//                                             reminder:
+//                                             element),
+//                                         overflow:
+//                                         TextOverflow
+//                                             .ellipsis,
+//                                         maxLines: 5,
+//                                         softWrap: false,
+//                                         style: ThemeText
+//                                             .subtitle,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   Container(
+//                                     margin: EdgeInsets.only(
+//                                         top: ScreenUtil()
+//                                             .setHeight(10)),
+//                                     color: Colors.grey,
+//                                     height: ScreenUtil()
+//                                         .setHeight(0.5),
+//                                     width: ScreenUtil()
+//                                         .screenWidth -
+//                                         85,
+//                                   )
+//                                 ]),
+//                           )
+//                         ])));
+//           });
+//     }
+//   Widget emptyLists (AllRemindersState state)
+//   {
+//     return Expanded(
+//         child: ListView.builder(
+//           physics: NeverScrollableScrollPhysics(),
+//           shrinkWrap: true,
+//           itemCount: state.emptyLists.length,
+//           itemBuilder: (context, index) {
+//             log(state.emptyLists[index].name);
+//             return Column(
+//               children: [
+//                 Padding(
+//                   padding: EdgeInsets.only(
+//                     top: ScreenUtil().setHeight(10),
+//                   ),
+//                   child: Align(
+//                     alignment: Alignment.centerLeft,
+//                     child: Text(
+//                       state.emptyLists[index].name,
+//                       style: ThemeText.headline2ListScreen
+//                           .copyWith(
+//                           color: ColorConstants.colorMap[
+//                           state.emptyLists[index]
+//                               .color]),
+//                     ),
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: EdgeInsets.only(
+//                       top: ScreenUtil().setHeight(20),
+//                       bottom: ScreenUtil().setHeight(20)),
+//                   child: Align(
+//                       alignment: Alignment.center,
+//                       child: RemindersConstants.noReminders),
+//                 )
+//               ],
+//             );
+//           },
+//         ));
+//   }
+//   String getColorOfList(String name, AllRemindersState state) {
+//     for (int i = 0; i < state.myLists.length; i++) {
+//       if (state.myLists[i].name == name) {
+//         return state.myLists[i].color;
+//       }
+//     }
+//     return 'blue';
+//   }
+//
+//   String getDetails({
+//     Reminder reminder,
+//     String date,
+//     String time,
+//   }) {
+//     if (reminder.notes != '') {
+//       if (reminder.dateAndTime != 0) {
+//         if (reminder.dateAndTime % 10 == 1) {
+//           return '${date == now ? 'Today' : date}, ${time} \n${reminder.notes}';
+//         } else {
+//           return '${date == now ? 'Today' : date}\n${reminder.notes}';
+//         }
+//       } else {
+//         return '${reminder.notes}';
+//       }
+//     } else {
+//       if (reminder.dateAndTime != 0) {
+//         if (reminder.dateAndTime % 10 == 1) {
+//           return '${date == now ? 'Today' : date}, ${time}';
+//         } else {
+//           return '${date == now ? 'Today' : date}';
+//         }
+//       } else
+//         return null;
+//     }
+//   }
+//
+//   void _deleteReminder({Reminder reminder, BuildContext context}) {
+//     int id = reminder.id;
+//     BlocProvider.of<AllRemindersBloc>(context)
+//       ..add(DeleteReminderInAllScreenEvent(id: id))
+//       ..add(UpdateAllListEvent(isUpdated: true));
+//     ScaffoldMessenger.of(context).showSnackBar(FlashMessage(type: 'Success'));
+//     Navigator.pop(context);
+//   }
+//
+//   Widget _appbar(
+//       {@required BuildContext context, @required AllRemindersState state}) {
+//     return AppbarWidgetForListScreen(
+//         context: context,
+//         onTapCreateNew: () async {
+//           isUpdated =
+//               await Navigator.pushNamed(context, RouteList.createNewScreen);
+//
+//           if (isUpdated) {
+//             BlocProvider.of<AllRemindersBloc>(context)
+//                 .add(UpdateAllListEvent(isUpdated: true));
+//           }
+//         },
+//         onTapCancel: () {
+//           Navigator.pop(context, state.isUpdated);
+//         });
+//   }
+// }

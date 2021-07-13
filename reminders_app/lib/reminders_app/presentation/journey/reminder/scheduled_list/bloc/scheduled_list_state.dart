@@ -3,22 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:reminders_app/reminders_app/domain/entities/reminder.dart';
 
 class ScheduledRemindersState extends Equatable {
-  final List<int> dateList;
-  final Map<int, List<Reminder>> scheduledList;
+  final List<Reminder> scheduledList;
   final bool isUpdated;
 
-  ScheduledRemindersState(
-      {@required this.dateList, @required this.scheduledList, this.isUpdated});
+  ScheduledRemindersState({@required this.scheduledList, this.isUpdated});
   ScheduledRemindersState update({
     bool isUpdated,
-    List<int> dateList,
-    Map<int, List<Reminder>> scheduledList,
+    List<Reminder> scheduledList,
   }) =>
       ScheduledRemindersState(
-          isUpdated: isUpdated ?? this.isUpdated,
-          dateList: dateList,
-          scheduledList: scheduledList);
+          isUpdated: isUpdated ?? this.isUpdated, scheduledList: scheduledList);
 
   @override
-  List<Object> get props => [this.isUpdated, this.dateList, this.scheduledList];
+  List<Object> get props => [this.isUpdated, this.scheduledList];
 }

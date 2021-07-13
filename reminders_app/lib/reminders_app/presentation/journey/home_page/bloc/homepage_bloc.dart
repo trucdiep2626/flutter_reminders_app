@@ -89,6 +89,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         list[i].name: (await reminderUc.getReminderOfList(list[i].name)).length
       });
     }
+
     yield state.update(
       todayListLength: todayListLength,
       scheduledListLength: scheduledListLength,

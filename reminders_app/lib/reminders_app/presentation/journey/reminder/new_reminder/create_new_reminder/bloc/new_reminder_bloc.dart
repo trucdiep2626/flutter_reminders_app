@@ -78,6 +78,7 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
     log(reminder.id.toString()+"iddddđ");
+    log(reminder.priority.toString()+"priority");
     var result;
     if(allReminders.isEmpty)
       {
@@ -85,8 +86,8 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
       }
     else
       {
-
         result = await reminderUc.setReminder(reminder);
+
       if(allReminders.length<2)
         {
           if(allReminders[0].priority== reminder.priority)
@@ -111,14 +112,22 @@ class NewReminderBloc extends Bloc<NewReminderEvent, NewReminderState> {
         }
       else
        {
-         for(int i=0;i<allReminders.length-1;i++)
+         if(reminder.priority==3)
          {
-           if((allReminders[i].priority>= reminder.priority && reminder.priority>= allReminders[i+1].priority))
+           allReminders.insert(0, reminder);
+         }
+         else
+           {
+             for(int i=0;i<allReminders.length-1;i++)
              {
+               if((allReminders[i].priority>= reminder.priority && reminder.priority>= allReminders[i+1].priority))
+               {
                  allReminders.insert(i+1, reminder);
                  break;
                }
-         }
+             }
+           }
+
          for (int k = 0; k < allReminders.length; k++) {
            for (int h = k + 1; h < allReminders.length; h++) {
              if ((allReminders[k]?.priority == allReminders[h]?.priority) &&
